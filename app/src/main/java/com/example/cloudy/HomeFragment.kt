@@ -28,6 +28,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.cloudy.R
 import com.example.cloudy.Util
 import com.example.cloudy.home.view.DayWeatherAdapter
@@ -68,6 +70,7 @@ class HomeFragment : Fragment() {
     private lateinit var humidity: TextView
     private lateinit var wind: TextView
     private lateinit var pressure: TextView
+    private lateinit var cloud: TextView
     private lateinit var image: ImageView
     var dayList = mutableListOf<WeatherItem>()
     var weakList = mutableListOf<WeatherItem>()
@@ -114,6 +117,7 @@ override  fun onCreateView(
         degree =view.findViewById(R.id.tv_degree)
         humidity =view.findViewById(R.id.tv_humidity)
         wind = view.findViewById(R.id.tv_wind_speed)
+        cloud=view.findViewById(R.id.tv_cloud)
         pressure = view.findViewById(R.id.tv_pressure)
         image =view.findViewById(R.id.ivPhoto)
 
@@ -242,11 +246,34 @@ override  fun onCreateView(
             val weatherData = weatherList.firstOrNull()
             weatherData?.let {
                 _weather.text = weatherData.list[0].weather[0].description
-                degree.text = "${weatherData.list[0].main.temp} °C"
-                humidity.text = "Humidity: ${weatherData.list[0].main.humidity}%"
-                pressure.text = "Pressure: ${weatherData.list[0].main.pressure} hPa"
-                wind.text = "Wind Speed: ${weatherData.list[0].wind.speed} m/s"
+                degree.text = "${weatherData.list[0].main.temp}°C"
+                humidity.text = "${weatherData.list[0].main.humidity}%"
+                pressure.text = "${weatherData.list[0].main.pressure} hPa"
+                wind.text = "${weatherData.list[0].wind.speed} m/s"
                 tvLocation.text = weatherData.city.name
+                cloud.text=weatherData.list[0].clouds.all.toString()
+
+                var icon=weatherData.list[0].weather[0].icon
+
+                if (icon=="01d"|| icon=="01n" ){
+                    image.setImageResource(R.drawable.sunny)
+                }
+                if (icon=="02d"|| icon=="02n"|| icon=="03d"|| icon=="03n"|| icon=="04d"|| icon=="04n" ){
+                    image.setImageResource(R.drawable.cloud)
+                }
+                if (icon=="09d"|| icon=="09n"|| icon=="10d"|| icon=="10n" ){
+                    image.setImageResource(R.drawable.rain)
+                }
+                if (icon=="11d"|| icon=="11n" ){
+                    image.setImageResource(R.drawable.thunder)
+                }
+                if (icon=="13d"|| icon=="13n" ){
+                    image.setImageResource(R.drawable.snow)
+                }
+                if (icon=="50d"|| icon=="50n" ){
+                    image.setImageResource(R.drawable.mist)
+                }
+
                 Log.i(TAG, "onCreate: ${weatherData.city.name}")
 
                 val currentDateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
