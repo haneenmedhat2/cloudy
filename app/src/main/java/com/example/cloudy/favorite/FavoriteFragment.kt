@@ -30,7 +30,8 @@ class FavoriteFragment : Fragment() {
         text=view.findViewById(R.id.tv)
 
         add.setOnClickListener {
-
+            val intent = Intent(requireContext(), MapsActivity::class.java)
+            startActivity(intent)
         }
     }
 

@@ -25,7 +25,6 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     lateinit var navigationView: NavigationView
 
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
