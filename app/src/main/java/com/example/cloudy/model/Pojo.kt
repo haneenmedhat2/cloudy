@@ -1,5 +1,8 @@
 package com.example.cloudy.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 
 data class WeatherResponse(
     val cod: String,
@@ -73,6 +76,13 @@ data class City(
 )
 
 data class Coord(
+    val lat: Double,
+    val lon: Double
+)
+@Entity(tableName = "city")
+data class MapCity(
+    @PrimaryKey
+    val cityName:String,
     val lat: Double,
     val lon: Double
 )

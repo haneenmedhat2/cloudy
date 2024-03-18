@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -24,10 +25,13 @@ import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cloudy.ApiState
 import com.example.cloudy.R
 import com.example.cloudy.Util
+import com.example.cloudy.db.CityLocalDataSourceImp
 import com.example.cloudy.home.viewmodel.HomeViewModel
 import com.example.cloudy.home.viewmodel.HomeViewModelFactory
 import com.example.cloudy.model.WeatherItem
@@ -38,6 +42,8 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -65,6 +71,8 @@ class HomeFragment : Fragment() {
     private lateinit var pressure: TextView
     private lateinit var cloud: TextView
     private lateinit var image: ImageView
+    private lateinit var progressBar: ProgressBar
+
     var dayList = mutableListOf<WeatherItem>()
     var weakList = mutableListOf<WeatherItem>()
 
@@ -97,8 +105,7 @@ override  fun onCreateView(
         }
 
         weatherFactory= HomeViewModelFactory(
-            WeatherRepositoryImp.getInstance(
-            WeatherRemoteDataSourceImp.getInstance()))
+            WeatherRepositoryImp.getInstance(WeatherRemoteDataSourceImp.getInstance(),CityLocalDataSourceImp(requireContext())))
         viewModel= ViewModelProvider(this,weatherFactory).get(HomeViewModel::class.java)
 
         recyclerView1=view.findViewById(R.id.rv_day)
@@ -113,6 +120,8 @@ override  fun onCreateView(
         cloud=view.findViewById(R.id.tv_cloud)
         pressure = view.findViewById(R.id.tv_pressure)
         image =view.findViewById(R.id.ivPhoto)
+        progressBar=view.findViewById(R.id.progress)
+
 
         val formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM")
         val current = LocalDateTime.now().format(formatter)
@@ -232,63 +241,84 @@ override  fun onCreateView(
         )
     }
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchWeatherData() {
         viewModel.getWeather(latitude, longitude, Util.API_KEY, "metric")
-        viewModel.weatherList.observe(this, Observer { weatherList ->
-            val weatherData = weatherList.firstOrNull()
-            weatherData?.let {
-                _weather.text = weatherData.list[0].weather[0].description
-                degree.text = "${weatherData.list[0].main.temp}°C"
-                humidity.text = "${weatherData.list[0].main.humidity}%"
-                pressure.text = "${weatherData.list[0].main.pressure} hPa"
-                wind.text = "${weatherData.list[0].wind.speed} m/s"
-                tvLocation.text = weatherData.city.name
-                cloud.text=weatherData.list[0].clouds.all.toString()
+        lifecycleScope.launch {
+            viewModel.weatherList.collectLatest { weatherList ->
+                when(weatherList) {
+                    is ApiState.Loading -> {
+                        recyclerView1.visibility = View.GONE
+                        recyclerView2.visibility = View.GONE
+                        progressBar.visibility = View.VISIBLE
+                    }
 
-                var icon=weatherData.list[0].weather[0].icon
+                    is ApiState.Success -> {
+                        recyclerView1.visibility = View.VISIBLE
+                        recyclerView2.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
+                        val weatherData = weatherList.data
+                        weatherData?.let {
+                            _weather.text = weatherData.list[0].weather[0].description
+                            degree.text = "${weatherData.list[0].main.temp}°C"
+                            humidity.text = "${weatherData.list[0].main.humidity}%"
+                            pressure.text = "${weatherData.list[0].main.pressure} hPa"
+                            wind.text = "${weatherData.list[0].wind.speed} m/s"
+                            tvLocation.text = weatherData.city.name
+                            cloud.text = weatherData.list[0].clouds.all.toString()
+                            var icon = weatherData.list[0].weather[0].icon
 
-                if (icon=="01d"|| icon=="01n" ){
-                    image.setImageResource(R.drawable.sunny)
-                }
-                if (icon=="02d"|| icon=="02n"|| icon=="03d"|| icon=="03n"|| icon=="04d"|| icon=="04n" ){
-                    image.setImageResource(R.drawable.cloud)
-                }
-                if (icon=="09d"|| icon=="09n"|| icon=="10d"|| icon=="10n" ){
-                    image.setImageResource(R.drawable.rain)
-                }
-                if (icon=="11d"|| icon=="11n" ){
-                    image.setImageResource(R.drawable.thunder)
-                }
-                if (icon=="13d"|| icon=="13n" ){
-                    image.setImageResource(R.drawable.snow)
-                }
-                if (icon=="50d"|| icon=="50n" ){
-                    image.setImageResource(R.drawable.mist)
-                }
+                            if (icon == "01d" || icon == "01n") {
+                                image.setImageResource(R.drawable.sunny)
+                            }
+                            if (icon == "02d" || icon == "02n" || icon == "03d" || icon == "03n" || icon == "04d" || icon == "04n") {
+                                image.setImageResource(R.drawable.cloud)
+                            }
+                            if (icon == "09d" || icon == "09n" || icon == "10d" || icon == "10n") {
+                                image.setImageResource(R.drawable.rain)
+                            }
+                            if (icon == "11d" || icon == "11n") {
+                                image.setImageResource(R.drawable.thunder)
+                            }
+                            if (icon == "13d" || icon == "13n") {
+                                image.setImageResource(R.drawable.snow)
+                            }
+                            if (icon == "50d" || icon == "50n") {
+                                image.setImageResource(R.drawable.mist)
+                            }
 
-                Log.i(TAG, "onCreate: ${weatherData.city.name}")
+                            Log.i(TAG, "onCreate: ${weatherData.city.name}")
 
-                val currentDateString = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-
-
-                var dayWeather = weatherData.list.subList(0, minOf(6,weatherData.list.size))
-
-                dayList.addAll(dayWeather)
-                dayAdapter.submitList(dayList)
+                            val currentDateString =
+                                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
 
-                var weakWeather=weatherData.list
-                var hashSet=HashSet<String>()
-                weakWeather.forEach { weather ->
-                    var apidDate=weather.dt_txt.split(" ")[0]
-                    if (apidDate!=currentDateString && hashSet.add(apidDate)) {
-                        weakList.add(weather)
+                            var dayWeather = weatherData.list.subList(0, minOf(6, weatherData.list.size))
+
+                            dayList.addAll(dayWeather)
+                            dayAdapter.submitList(dayList)
+
+                            var weakWeather = weatherData.list
+                            var hashSet = HashSet<String>()
+                            weakWeather.forEach { weather ->
+                                var apidDate = weather.dt_txt.split(" ")[0]
+                                if (apidDate != currentDateString && hashSet.add(apidDate)) {
+                                    weakList.add(weather)
+                                }
+                            }
+                            weakAdapter.submitList(weakList)
+                        }
+
+                    }
+
+                    else -> {
+                        progressBar.visibility = View.GONE
+                        Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                     }
                 }
 
-                weakAdapter.submitList(weakList)
+                }
             }
-        })
-    }
+        }
 }

@@ -13,7 +13,7 @@ interface ApiService {
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
         @Query("units") units:String
-    ): Response<WeatherResponse>
+    ): WeatherResponse
 }
 
 

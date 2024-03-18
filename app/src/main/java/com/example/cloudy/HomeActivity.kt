@@ -1,19 +1,13 @@
 package com.example.cloudy
 
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.ui.NavigationUI
-import com.example.cloudy.databinding.ActivityHomeBinding
-import com.example.cloudy.favorite.FavoriteFragment
+import com.example.cloudy.favorite.view.FavoriteFragment
 import com.example.cloudy.home.view.HomeFragment
 import com.google.android.material.navigation.NavigationView
 

@@ -3,6 +3,8 @@ package com.example.cloudy.network
 import android.util.Log
 import com.example.cloudy.model.WeatherResponse
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 
@@ -25,29 +27,18 @@ class WeatherRemoteDataSourceImp private constructor():WeatherRemoteDataSource{
         }
     }
 
-    override suspend fun getWeather(
+    override  fun getWeather(
         latitude: Double,
         longitude: Double,
         apiKey: String,units:String
-    ): WeatherResponse? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response: Response<WeatherResponse> = serviceObj.getWeather(latitude, longitude, apiKey,units)
-                if (response.isSuccessful) {
-                    Log.i(TAG, "Successfully network call ${response.body()?.city?.name}")
-                    response.body()
-
-                } else {
-                    Log.i(TAG, "Error in fetching data")
-                    null
-                }
-            } catch (e: Exception) {
-                Log.i(TAG, "getAllWeather details: ${e.message}")
-                null
-            }
+    ): Flow<WeatherResponse?> {
+        return flow {
+            val weather =   serviceObj.getWeather(latitude, longitude, apiKey, units)
+            emit(weather)
         }
 
     }
+
 
 }
 

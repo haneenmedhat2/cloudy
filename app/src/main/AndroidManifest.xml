@@ -34,7 +34,7 @@
             android:value="@string/apikey" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".favorite.view.MapsActivity"
             android:exported="false"
             android:label="@string/title_activity_maps" />
 

@@ -1,8 +1,13 @@
 package com.example.cloudy.model
 
+import kotlinx.coroutines.flow.Flow
+
 interface WeatherRepository {
 
     //Remote//
-    suspend fun getWeatherRepo(latitude: Double, longitude: Double, apiKey: String,units:String):WeatherResponse?
+     fun getWeatherRepo(latitude: Double, longitude: Double, apiKey: String,units:String): Flow<WeatherResponse?>
+
+    //Local
+     suspend fun insertCity(city: MapCity)
 
 }
