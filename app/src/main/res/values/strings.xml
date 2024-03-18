@@ -45,4 +45,8 @@
     <string name="next">next</string>
     <string name="back">back</string>
     <string name="location">Location</string>
+    <string name="title_activity_maps">MapsActivity</string>
+
+    <string name="open">open</string>
+    <string name="close">close</string>
 </resources>

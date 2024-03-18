@@ -7,7 +7,7 @@ import android.widget.Button
 import androidx.viewpager2.widget.ViewPager2
 import com.example.cloudy.R
 import com.example.cloudy.databinding.ActivityWelcomeBinding
-import com.example.cloudy.home.view.HomeActivity
+import com.example.cloudy.HomeActivity
 import com.google.android.material.tabs.TabLayoutMediator
 
 
@@ -46,7 +46,7 @@ class WelcomeActivity : AppCompatActivity() {
 
         btnNext.setOnClickListener {
             if (getItem() > mViewPager.childCount) {
-               intent=Intent(this@WelcomeActivity,HomeActivity::class.java)
+               intent=Intent(this@WelcomeActivity, HomeActivity::class.java)
                 startActivity(intent)
             } else {
                 mViewPager.setCurrentItem(getItem() + 1, true)

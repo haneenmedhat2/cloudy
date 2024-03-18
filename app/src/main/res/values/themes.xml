@@ -6,10 +6,7 @@
     </style>
 
     <style name="Theme.Cloudy" parent="Base.Theme.Cloudy" />
-    <style name="Theme.Cloudy.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
+
     <style name="Theme.Cloudy.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.Cloudy.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

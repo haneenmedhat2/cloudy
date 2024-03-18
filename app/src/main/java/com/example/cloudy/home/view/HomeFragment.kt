@@ -1,4 +1,4 @@
-package com.example.cloudy
+package com.example.cloudy.home.view
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -19,21 +19,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.cloudy.R
 import com.example.cloudy.Util
-import com.example.cloudy.home.view.DayWeatherAdapter
-import com.example.cloudy.home.view.WeakAdapter
 import com.example.cloudy.home.viewmodel.HomeViewModel
 import com.example.cloudy.home.viewmodel.HomeViewModelFactory
 import com.example.cloudy.model.WeatherItem
@@ -44,7 +38,6 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
