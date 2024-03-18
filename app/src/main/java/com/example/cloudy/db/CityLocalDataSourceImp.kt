@@ -2,6 +2,7 @@ package com.example.cloudy.db
 
 import android.content.Context
 import com.example.cloudy.model.MapCity
+import kotlinx.coroutines.flow.Flow
 
 class CityLocalDataSourceImp(context: Context) :CityLocalDataSource{
 
@@ -15,12 +16,12 @@ class CityLocalDataSourceImp(context: Context) :CityLocalDataSource{
         dao.addCity(city)
     }
 
-   /* override suspend fun deleteProduct(product: Product) {
-        dao.deleteProduct(product)
-    }*/
+    override suspend fun deleteCity(city: MapCity) {
+        dao.deleteCity(city)
+    }
 
-   /* override  fun getAllProducts(): Flow<List<Product>> {
-      return dao.getAllProducts()
-    }*/
+    override fun getAllCities(): Flow<List<MapCity>> {
+       return dao.getAllCities()
+    }
 
 }

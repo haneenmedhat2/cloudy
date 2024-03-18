@@ -9,5 +9,7 @@ interface WeatherRepository {
 
     //Local
      suspend fun insertCity(city: MapCity)
+    suspend fun deleteCity(city: MapCity)
+    fun getAllCities(): Flow<List<MapCity>>
 
 }

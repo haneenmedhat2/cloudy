@@ -69,7 +69,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 lifecycleScope.launch {
                     sharedFlow.collectLatest {
-                        viewModel.getCity(city)
+                        viewModel.insertCity(city)
                         Toast.makeText(this@MapsActivity, "City added successfully", Toast.LENGTH_SHORT).show()
                     }
                 }

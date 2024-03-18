@@ -31,4 +31,12 @@ class WeatherRepositoryImp(val remoteDataSource: WeatherRemoteDataSource,val loc
         localDataSource.insertCity(city)
     }
 
+    override suspend fun deleteCity(city: MapCity) {
+        localDataSource.deleteCity(city)
+    }
+
+    override fun getAllCities(): Flow<List<MapCity>> {
+        return localDataSource.getAllCities()
+    }
+
 }
