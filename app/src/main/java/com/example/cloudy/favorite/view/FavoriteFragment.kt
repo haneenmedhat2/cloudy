@@ -85,6 +85,8 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
 
     override fun onCardClick(city: MapCity) {
        val intent=Intent(requireContext(), CityWeatherActivity::class.java)
+        intent.putExtra("latitude",city.lat)
+        intent.putExtra("longitude",city.lon)
         startActivity(intent)
     }
 

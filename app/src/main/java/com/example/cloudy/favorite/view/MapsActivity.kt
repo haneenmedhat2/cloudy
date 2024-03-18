@@ -27,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -66,23 +67,21 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 val cityName = query
                 val cityAddress = cityList[0]
                 val city = MapCity(cityName, cityAddress.latitude, cityAddress.longitude)
-
-                lifecycleScope.launch {
-                    sharedFlow.collectLatest {
                         viewModel.insertCity(city)
                         Toast.makeText(this@MapsActivity, "City added successfully", Toast.LENGTH_SHORT).show()
-                    }
+
                 }
-            }else{
-                Toast.makeText(
-                    this@MapsActivity,
-                    "No city to be added! please right a city name first",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-
-
+         else{
+            Toast.makeText(
+                this@MapsActivity,
+                "No city to be added! please right a city name first",
+                Toast.LENGTH_SHORT
+            ).show()
         }
+    }
+
+
+
         search.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
@@ -90,6 +89,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                  query = s.toString()
                 lifecycleScope.launch {
+                    delay(1000)
                     sharedFlow.emit(query)
                 }
             }

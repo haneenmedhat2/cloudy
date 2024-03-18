@@ -1,12 +1,8 @@
 package com.example.cloudy.city.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cloudy.ApiState
-import com.example.cloudy.model.WeatherItem
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.model.WeatherResponse
 import kotlinx.coroutines.Dispatchers
