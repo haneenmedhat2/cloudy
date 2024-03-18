@@ -12,14 +12,12 @@ import kotlinx.coroutines.launch
 
 class CityViewModel (private val repositoryImp: WeatherRepositoryImp): ViewModel() {
 
-    private var _cityList = MutableLiveData<List<MapCity>>()
-    var cityList: LiveData<List<MapCity>> = _cityList
 
-/*    fun getCity(cityName) {
+
+  fun getCity(cityName:MapCity) {
         viewModelScope.launch {
-            val weatherResponse = repositoryImp.insertCity(cityName)
-            _cityList.postValue(listOf(MapCity) as List<MapCity>?)
+            repositoryImp.insertCity(cityName)
 
         }
-    }*/
+    }
 }

@@ -8,11 +8,19 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.cloudy.R
 import com.example.cloudy.databinding.ActivityMapsBinding
+import com.example.cloudy.db.CityLocalDataSourceImp
+import com.example.cloudy.favorite.viewmode.CityViewModel
+import com.example.cloudy.favorite.viewmode.CityViewModelFactory
+import com.example.cloudy.model.MapCity
+import com.example.cloudy.model.WeatherRepositoryImp
+import com.example.cloudy.network.WeatherRemoteDataSourceImp
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -30,33 +38,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var search: EditText
-    private lateinit var add: Button
+    private lateinit var add: ImageView
     var cityList:MutableList<Address> = mutableListOf()
     var sharedFlow= MutableSharedFlow<String>()
-    var dbList:MutableList<Address> = mutableListOf()
 
 
-
-    // private lateinit var searchView: androidx.appcompat.widget.SearchView
-
+    private lateinit var viewFactory:CityViewModelFactory
+    private lateinit var viewModel: CityViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         search=findViewById(R.id.etName)
         add=findViewById(R.id.add_database)
-        // searchView=findViewById(R.id.idSearchView)
+
+        viewFactory=CityViewModelFactory(  WeatherRepositoryImp.getInstance
+            (WeatherRemoteDataSourceImp.getInstance(),CityLocalDataSourceImp(this@MapsActivity)))
+
+        viewModel= ViewModelProvider(this,viewFactory).get(CityViewModel::class.java)
+
         val geocoder = Geocoder(this@MapsActivity)
         var query=""
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 
         add.setOnClickListener {
             if (query.isNotBlank()){
-                Toast.makeText(this@MapsActivity, "City added successfully", Toast.LENGTH_SHORT).show()
+                val cityName = query
+                val cityAddress = cityList[0]
+                val city = MapCity(cityName, cityAddress.latitude, cityAddress.longitude)
+
                 lifecycleScope.launch {
                     sharedFlow.collectLatest {
-                        dbList.add(cityList[0])
-                        Log.i(TAG, "Button clicked: $dbList")
+                        viewModel.getCity(city)
+                        Toast.makeText(this@MapsActivity, "City added successfully", Toast.LENGTH_SHORT).show()
                     }
                 }
             }else{
