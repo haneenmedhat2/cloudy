@@ -4,7 +4,6 @@ import android.location.Location
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -15,14 +14,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cloudy.ApiState
+import com.example.cloudy.utility.ApiState
 import com.example.cloudy.R
-import com.example.cloudy.Util
+import com.example.cloudy.utility.Util
 import com.example.cloudy.city.viewmodel.CityWeatherViewModel
 import com.example.cloudy.city.viewmodel.CityWeatherViewModelFactory
-import com.example.cloudy.db.CityLocalDataSourceImp
-import com.example.cloudy.favorite.viewmode.CityViewModel
-import com.example.cloudy.favorite.viewmode.CityViewModelFactory
+import com.example.cloudy.db.LocalDataSourceImp
 import com.example.cloudy.home.view.DayWeatherAdapter
 import com.example.cloudy.home.view.WeakAdapter
 import com.example.cloudy.model.WeatherItem
@@ -73,7 +70,7 @@ class CityWeatherActivity : AppCompatActivity() {
         weatherFactory= CityWeatherViewModelFactory(
             WeatherRepositoryImp.getInstance(
                 WeatherRemoteDataSourceImp.getInstance(),
-                CityLocalDataSourceImp(this)
+                LocalDataSourceImp(this)
             ))
         viewModel= ViewModelProvider(this,weatherFactory).get(CityWeatherViewModel::class.java)
 

@@ -1,8 +1,7 @@
-package com.example.cloudy.favorite.viewmode
+package com.example.cloudy.favorite.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.cloudy.home.viewmodel.HomeViewModel
 import com.example.cloudy.model.WeatherRepositoryImp
 
 class CityViewModelFactory( private val _repo: WeatherRepositoryImp) : ViewModelProvider.Factory {

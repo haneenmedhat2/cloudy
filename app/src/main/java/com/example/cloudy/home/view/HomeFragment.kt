@@ -23,15 +23,14 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cloudy.ApiState
+import com.example.cloudy.utility.ApiState
 import com.example.cloudy.R
-import com.example.cloudy.Util
-import com.example.cloudy.db.CityLocalDataSourceImp
+import com.example.cloudy.utility.Util
+import com.example.cloudy.db.LocalDataSourceImp
 import com.example.cloudy.home.viewmodel.HomeViewModel
 import com.example.cloudy.home.viewmodel.HomeViewModelFactory
 import com.example.cloudy.model.WeatherItem
@@ -105,7 +104,7 @@ override  fun onCreateView(
         }
 
         weatherFactory= HomeViewModelFactory(
-            WeatherRepositoryImp.getInstance(WeatherRemoteDataSourceImp.getInstance(),CityLocalDataSourceImp(requireContext())))
+            WeatherRepositoryImp.getInstance(WeatherRemoteDataSourceImp.getInstance(),LocalDataSourceImp(requireContext())))
         viewModel= ViewModelProvider(this,weatherFactory).get(HomeViewModel::class.java)
 
         recyclerView1=view.findViewById(R.id.rv_day)

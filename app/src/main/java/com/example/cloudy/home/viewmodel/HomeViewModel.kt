@@ -1,12 +1,8 @@
 package com.example.cloudy.home.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cloudy.ApiState
-import com.example.cloudy.model.WeatherItem
+import com.example.cloudy.utility.ApiState
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.model.WeatherResponse
 import kotlinx.coroutines.Dispatchers
@@ -26,9 +22,9 @@ class HomeViewModel(private val repositoryImp:WeatherRepositoryImp):ViewModel() 
         viewModelScope.launch(Dispatchers.IO) {
                repositoryImp.getWeatherRepo(latitude, longitude, apiKey,metric)
                    .catch { e ->
-                       _weatherList.value=ApiState.Failure(e)
+                       _weatherList.value= ApiState.Failure(e)
                    }
-                   .collect { data -> _weatherList.value=ApiState.Success(data) }
+                   .collect { data -> _weatherList.value= ApiState.Success(data) }
         }
     }
 }

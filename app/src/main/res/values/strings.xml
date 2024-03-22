@@ -51,4 +51,6 @@
     <string name="close">close</string>
     <string name="apikey">AIzaSyAGJ01fbxTYOmB82OmqeTet0J45JHN9fOk</string>
     <string name="add_to_favorite">Add to Favorite</string>
+    <string name="title_activity_maps_alert">MapsAlertActivity</string>
+    <string name="set_alarm">Set Alarm</string>
 </resources>

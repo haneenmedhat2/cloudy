@@ -1,5 +1,6 @@
 package com.example.cloudy.model
 
+import androidx.annotation.NonNull
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -81,8 +82,40 @@ data class Coord(
 )
 @Entity(tableName = "city")
 data class MapCity(
+    @NonNull
     @PrimaryKey
     val cityName:String,
+    @NonNull
     val lat: Double,
+    @NonNull
     val lon: Double
+)
+
+@Entity(tableName = "alert")
+data class Alert(
+    @NonNull
+    @PrimaryKey
+    val cityName:String,
+    @NonNull
+    val lat: Double,
+    @NonNull
+    val lon: Double,
+
+)
+
+@Entity(tableName = "alert_data")
+data class AlertData(
+    @NonNull
+    @PrimaryKey
+    val cityName:String,
+    @NonNull
+    val lat: Double,
+    @NonNull
+    val lon: Double,
+      @NonNull
+       val date: String,
+       @NonNull
+       val time: String,
+       @NonNull
+       val alertType:Int
 )

@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.example.cloudy.alert.view.AlertFragment
 import com.example.cloudy.favorite.view.FavoriteFragment
 import com.example.cloudy.home.view.HomeFragment
 import com.google.android.material.navigation.NavigationView
@@ -22,13 +23,14 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
         drawerLayout = findViewById(R.id.drawer_layout)
         navigationView = findViewById(R.id.navigator_layout)
 
         val actionBar = supportActionBar
         actionBar!!.setHomeAsUpIndicator(R.drawable.ic_menu)
         actionBar!!.setDisplayShowHomeEnabled(true)
-        actionBar.setDisplayHomeAsUpEnabled(true)
+        actionBar!!.setDisplayHomeAsUpEnabled(true)
 
         navigationView.setNavigationItemSelectedListener(this)
         val toogle=ActionBarDrawerToggle(this,drawerLayout,R.string.open,R.string.close)
@@ -73,6 +75,12 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
             R.id.alertFragment -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.nav_host_fragment, AlertFragment())
+                    .commit()
+                Log.i(TAG, "onNavigationItemSelected: alert")
+            }
+            R.id.settingsFragment -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment, SettingsFragment())
                     .commit()
                 Log.i(TAG, "onNavigationItemSelected: alert")
             }

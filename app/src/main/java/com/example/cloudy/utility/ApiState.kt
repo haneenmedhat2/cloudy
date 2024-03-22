@@ -1,4 +1,4 @@
-package com.example.cloudy
+package com.example.cloudy.utility
 
 
 sealed class ApiState<out T> {

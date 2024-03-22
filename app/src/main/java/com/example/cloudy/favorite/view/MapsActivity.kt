@@ -5,19 +5,16 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.widget.Button
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.cloudy.R
 import com.example.cloudy.databinding.ActivityMapsBinding
-import com.example.cloudy.db.CityLocalDataSourceImp
-import com.example.cloudy.favorite.viewmode.CityViewModel
-import com.example.cloudy.favorite.viewmode.CityViewModelFactory
+import com.example.cloudy.db.LocalDataSourceImp
+import com.example.cloudy.favorite.viewmodel.CityViewModel
+import com.example.cloudy.favorite.viewmodel.CityViewModelFactory
 import com.example.cloudy.model.MapCity
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
@@ -27,9 +24,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 private const val TAG = "MapsActivity"
@@ -39,7 +36,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var search: EditText
-    private lateinit var add: ImageView
+    private lateinit var add: FloatingActionButton
     var cityList:MutableList<Address> = mutableListOf()
     var sharedFlow= MutableSharedFlow<String>()
 
@@ -54,7 +51,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         add=findViewById(R.id.add_database)
 
         viewFactory=CityViewModelFactory(  WeatherRepositoryImp.getInstance
-            (WeatherRemoteDataSourceImp.getInstance(),CityLocalDataSourceImp(this@MapsActivity)))
+            (WeatherRemoteDataSourceImp.getInstance(),LocalDataSourceImp(this@MapsActivity)))
 
         viewModel= ViewModelProvider(this,viewFactory).get(CityViewModel::class.java)
 
@@ -67,7 +64,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 val cityName = query
                 val cityAddress = cityList[0]
                 val city = MapCity(cityName, cityAddress.latitude, cityAddress.longitude)
-                        viewModel.insertCity(city)
+                lifecycleScope.launch {
+                    viewModel.insertCity(city)
+                }
                         Toast.makeText(this@MapsActivity, "City added successfully", Toast.LENGTH_SHORT).show()
 
                 }

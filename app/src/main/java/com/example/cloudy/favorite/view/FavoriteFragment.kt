@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cloudy.R
 import com.example.cloudy.city.view.CityWeatherActivity
-import com.example.cloudy.db.CityLocalDataSourceImp
-import com.example.cloudy.favorite.viewmode.CityViewModel
-import com.example.cloudy.favorite.viewmode.CityViewModelFactory
+import com.example.cloudy.db.LocalDataSourceImp
+import com.example.cloudy.favorite.viewmodel.CityViewModel
+import com.example.cloudy.favorite.viewmodel.CityViewModelFactory
 import com.example.cloudy.model.MapCity
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
@@ -56,7 +56,7 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
 
         viewFactory = CityViewModelFactory(
             WeatherRepositoryImp.getInstance
-                (WeatherRemoteDataSourceImp.getInstance(), CityLocalDataSourceImp(requireContext()))
+                (WeatherRemoteDataSourceImp.getInstance(), LocalDataSourceImp(requireContext()))
         )
 
 

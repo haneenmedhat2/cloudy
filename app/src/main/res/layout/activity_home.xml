@@ -28,9 +28,6 @@
      android:layout_width="match_parent"
      app:menu="@menu/btm_mnu"
      />
-
-
-
     </androidx.drawerlayout.widget.DrawerLayout>
 
 
