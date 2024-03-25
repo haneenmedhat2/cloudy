@@ -27,7 +27,15 @@ class WeatherRepositoryImp(val remoteDataSource: WeatherRemoteDataSource,val loc
         return remoteDataSource.getWeather(latitude,longitude,apiKey,units)
     }
 
-   //Alert
+    override fun getWeatherAlert(
+        latitude: Double,
+        longitude: Double,
+        apiKey: String
+    ): Flow<AlertResponse?> {
+       return remoteDataSource.getWeatherAlert(latitude,longitude, apiKey)
+    }
+
+    //Alert
      override suspend fun insertAlert(alert: Alert) {
         localDataSource.insertAlert(alert)
     }
@@ -36,10 +44,22 @@ class WeatherRepositoryImp(val remoteDataSource: WeatherRemoteDataSource,val loc
         return localDataSource.getAllAlerts()
     }
 
+    override suspend fun deleteAlert(alert: Alert) {
+        localDataSource.deleteAlert(alert)
+    }
+
 
     //Alert Data
     override suspend fun insertAlertData(alert: AlertData) {
         localDataSource.insertAlertData(alert)
+    }
+
+    override fun getAlertData(): Flow<List<AlertData>> {
+        return localDataSource.getAlertData()
+    }
+
+    override suspend fun deleteAlertData(alert: AlertData) {
+        localDataSource.deleteAlertData(alert)
     }
 
     //City

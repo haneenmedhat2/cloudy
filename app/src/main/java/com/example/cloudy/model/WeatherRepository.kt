@@ -6,6 +6,8 @@ interface WeatherRepository {
 
     //Remote//
      fun getWeatherRepo(latitude: Double, longitude: Double, apiKey: String,units:String): Flow<WeatherResponse?>
+    fun getWeatherAlert(latitude: Double, longitude: Double, apiKey: String): Flow<AlertResponse?>
+
 
     //Local
 
@@ -18,7 +20,10 @@ interface WeatherRepository {
     //Alert Map
     suspend fun insertAlert(alert: Alert)
     fun getAllAlerts():Flow<List<Alert>>
+    suspend fun deleteAlert(alert: Alert)
 
     //Alert Data
     suspend fun insertAlertData(alert: AlertData)
+    fun getAlertData():Flow<List<AlertData>>
+    suspend fun deleteAlertData(alert: AlertData)
 }

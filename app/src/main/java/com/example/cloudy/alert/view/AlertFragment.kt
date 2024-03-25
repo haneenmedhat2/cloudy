@@ -1,38 +1,67 @@
 package com.example.cloudy.alert.view
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
+import android.annotation.SuppressLint
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import android.widget.Toast
-import androidx.fragment.app.DialogFragment
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.cloudy.R
 import com.example.cloudy.alert.viewmodel.AlertViewModel
 import com.example.cloudy.alert.viewmodel.AlertViewModelFactory
-import com.example.cloudy.databinding.CuatomAlertDialogBinding
 import com.example.cloudy.databinding.FragmentAlertBinding
 import com.example.cloudy.db.LocalDataSourceImp
+import com.example.cloudy.favorite.viewmodel.CityViewModel
+import com.example.cloudy.favorite.viewmodel.CityViewModelFactory
+import com.example.cloudy.model.Alert
 import com.example.cloudy.model.AlertData
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
+import com.example.cloudy.utility.ApiState
+import com.example.cloudy.utility.Util
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
+
+const val NOTFICATION_PERM=1023
 private const val TAG = "AlertFragment"
-class AlertFragment : Fragment() {
+class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
     private lateinit var binding: FragmentAlertBinding
     private lateinit var viewFactory: AlertViewModelFactory
     private lateinit var viewModel: AlertViewModel
-   var date: String=" "
+
+    private lateinit var viewFactory2: CityViewModelFactory
+    private lateinit var viewModel2: CityViewModel
+
+    private lateinit var alertAdapter: AlertAdapter
+    private lateinit var alertLayoutManager: LinearLayoutManager
+
+
+    var date: String=" "
     var time: String=" "
    var  radioValue: Int=-1
+    var timeDifference=0L
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,13 +74,82 @@ class AlertFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        alertAdapter = AlertAdapter(this)
+        alertLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
+        binding.rvAlert.apply {
+            adapter = alertAdapter
+            layoutManager = alertLayoutManager
+        }
+
+        viewFactory2 = CityViewModelFactory(
+            WeatherRepositoryImp.getInstance
+                (WeatherRemoteDataSourceImp.getInstance(), LocalDataSourceImp(requireContext()))
+        )
+        viewModel2 = ViewModelProvider(this, viewFactory2).get(CityViewModel::class.java)
+
         viewFactory = AlertViewModelFactory(
             WeatherRepositoryImp.getInstance
                 (WeatherRemoteDataSourceImp.getInstance(), LocalDataSourceImp(requireContext()))
         )
         
         viewModel = ViewModelProvider(this, viewFactory).get(AlertViewModel::class.java)
-        
+
+
+        lifecycleScope.launch {
+            viewModel.alertData.collectLatest { alertData ->
+                if (alertData.isNotEmpty()) {
+                    alertAdapter.submitList(alertData)
+                    binding.tvAlert.visibility = View.GONE
+                    binding.ivNot.visibility = View.GONE
+
+                    for (i in alertData.indices) {
+                        val alertDatabase = alertData[i]
+                        viewModel.getWeatherAlert(alertDatabase!!.lat, alertDatabase.lon, Util.API_KEY)
+
+                        viewModel.alertList.collectLatest { alert ->
+                            when (alert) {
+                                is ApiState.Loading -> {
+                                    Log.i(TAG, "onViewCreated: Loading")
+                                }
+                                is ApiState.Success -> {
+                                    val date = alertDatabase.date
+                                    val parts = date.split("/")
+                                    val day = parts[0].toInt()
+                                    val month = parts[1].toInt() - 1
+                                    val year = parts[2].toInt()
+
+                                    val time = alertDatabase.time
+                                    val timeParts = time.split(":")
+                                    val hour = timeParts[0].toInt()
+                                    val minute = timeParts[1].toInt()
+
+                                    val calendar = Calendar.getInstance().apply {
+                                        set(Calendar.YEAR, year)
+                                        set(Calendar.MONTH, month)
+                                        set(Calendar.DAY_OF_MONTH, day)
+                                        set(Calendar.HOUR_OF_DAY, hour)
+                                        set(Calendar.MINUTE, minute)
+                                    }
+
+                                    var timeDifference = calendar.timeInMillis
+                                    var current =System.currentTimeMillis()
+                                    if (timeDifference-current >0){
+
+                                        createChannel()
+                                        scheduleNotification(timeDifference, i)
+
+                                    }
+
+                                }  else -> {
+                                Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT)
+                                    .show()
+                              }
+                            }
+                        }
+                    }
+                }
+            }
+        }
         var isVisible = false
         binding.btnSecFloat.hide()
         binding.btnThirdFloat.hide()
@@ -67,24 +165,45 @@ class AlertFragment : Fragment() {
             }
         }
         binding.btnSecFloat.setOnClickListener {
-            showAddDialog()
-            lifecycleScope.launch {
-                viewModel.alert.collectLatest { alert ->
-                    if (alert.isNotEmpty()) {
-                        val myAlert = alert.lastOrNull()
-                        myAlert?.let {
-                            if (!date.isNullOrBlank() && !time.isNullOrBlank() && radioValue != -1) {
-                                val alertData = AlertData(it.cityName, it.lat, it.lon, date, time, radioValue)
-                                viewModel.inserAlertData(alertData)
+
+            val dialog = AddDialogFragment()
+            dialog.show(childFragmentManager, "AddDialogFragment")
+            dialog.setOnSaveClickListener(object : AddDialogFragment.OnSaveClickListener {
+                override fun onSaveClick(
+                    selectedDate: String,
+                    selectedTime: String,
+                    radioButtonValue: Int
+                ) {
+                    val message = "Date: $selectedDate\nTime: $selectedTime\nSelected Option: $radioButtonValue"
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+
+                    date=selectedDate
+                    time=selectedTime
+                    radioValue=radioButtonValue
+
+                    lifecycleScope.launch {
+                        viewModel2.cityList.collectLatest { alert ->
+                            if (alert.isNotEmpty()) {
+                                for (myAlert in alert) {
+                                    if (!date.isNullOrBlank() && !time.isNullOrBlank() && radioValue != -1) {
+                                        val alertData = AlertData(myAlert!!.cityName, myAlert.lat, myAlert.lon, date, time, radioValue)
+                                        viewModel.inserAlertData(alertData)
+                                        date=""
+                                        time=""
+                                        radioValue=-1
+                                    }
+                                }
                             } else {
-                                Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), "No alerts available", Toast.LENGTH_SHORT).show()
                             }
                         }
-                    } else {
-                        Toast.makeText(requireContext(), "No alerts available", Toast.LENGTH_SHORT).show()
                     }
+                    
+                    
+
                 }
-            }
+            })
+
         }
         binding.btnThirdFloat.setOnClickListener{
            val intent=Intent(requireContext(), MapsAlertActivity::class.java)
@@ -92,111 +211,63 @@ class AlertFragment : Fragment() {
         }
 
 
-
-        }
-    private fun showAddDialog() {
-        val dialog = AddDialogFragment()
-        dialog.show(childFragmentManager, "AddDialogFragment")
-        dialog.setOnSaveClickListener(object : AddDialogFragment.OnSaveClickListener {
-            override fun onSaveClick(
-                selectedDate: String,
-                selectedTime: String,
-                radioButtonValue: Int
-            ) {
-                val message = "Date: $selectedDate\nTime: $selectedTime\nSelected Option: $radioButtonValue"
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-
-                date=selectedDate
-                time=selectedTime
-                radioValue=radioButtonValue
-            }
-        })
     }
+
+    override fun onDeleteClick(alert: AlertData) {
+        lifecycleScope.launch {
+            viewModel.deleteAlertData(alert)
+        }
+
+    }
+
+
+
+    fun createChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val serviceChannel = NotificationChannel(
+                channelID,
+                "Foreground Service Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+            serviceChannel.description = "Alert description"
+            val manager: NotificationManager =
+                requireContext().getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            manager.createNotificationChannel(serviceChannel)
+        }
+    }
+
+    @SuppressLint("ScheduleExactAlarm")
+    fun scheduleNotification(timeDifference: Long, notificationID: Int) {
+        val notificationIntent = Intent(requireContext(), NotificationAlert::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), notificationID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.setExact(
+            AlarmManager.RTC_WAKEUP,
+            timeDifference,
+            pendingIntent
+        )
+    }
+    fun checkNotificationPermission(){
+        val intent=Intent(requireContext(),AlertIntentService::class.java)
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){ //13>
+            val notificationManager=requireContext().getSystemService(NotificationManager::class.java) as NotificationManager
+            if(notificationManager.areNotificationsEnabled())
+                startForegroundService(requireContext(),intent)
+            else{
+                ActivityCompat.requestPermissions(
+                    requireActivity(),
+                    arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),
+                    NOTFICATION_PERM
+                )
+            }
+        }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            startForegroundService(requireContext(),intent)
+        }else{
+            requireContext().startService(intent)
+        }
+    }
+
 
 }
 
-class AddDialogFragment : DialogFragment() {
-    private lateinit var binding: CuatomAlertDialogBinding
-    private var onSaveClickListener: OnSaveClickListener? = null
-
-    private var selectedDate: String? = null
-    private var selectedTime: String? = null
-    private var radioButtonValue: Int = -1
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        binding = CuatomAlertDialogBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-        binding.btnSave.setOnClickListener {
-            if (selectedDate == null || selectedTime == null || radioButtonValue == -1) {
-                Toast.makeText(requireContext(), "Please fill in all fields.", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                onSaveClickListener?.onSaveClick(selectedDate!!, selectedTime!!, radioButtonValue)
-                dismiss()
-            }
-        }
-
-
-        binding.btnCancel.setOnClickListener {
-            dismiss()
-        }
-
-        binding.calendarImageView.setOnClickListener { showDatePicker() }
-        binding.clockImageView.setOnClickListener { showTimePicker() }
-
-        binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val radioButton = binding.root.findViewById<RadioButton>(checkedId)
-            val selectedText = radioButton?.text?.toString()
-            radioButtonValue = when (selectedText) {
-                "Notification" -> 1
-                "Alarm" -> 2
-                else -> -1
-            }
-        }
-    }
-
-        fun setOnSaveClickListener(listener: OnSaveClickListener) {
-            onSaveClickListener = listener
-        }
-
-        private fun showDatePicker() {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-            val datePickerDialog =
-                DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
-                    selectedDate = "$dayOfMonth/${month + 1}/$year"
-                }, year, month, day)
-            datePickerDialog.show()
-        }
-
-        private fun showTimePicker() {
-            val calendar = Calendar.getInstance()
-            val hour = calendar.get(Calendar.HOUR_OF_DAY)
-            val minute = calendar.get(Calendar.MINUTE)
-
-            val timePickerDialog = TimePickerDialog(requireContext(), { _, hourOfDay, minute ->
-                selectedTime = "$hourOfDay:$minute"
-            }, hour, minute, true)
-            timePickerDialog.show()
-        }
-
-
-        interface OnSaveClickListener {
-            fun onSaveClick(selectedDate: String, selectedTime: String, radioButtonValue: Int)
-        }
-
-}

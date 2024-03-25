@@ -1,5 +1,6 @@
 package com.example.cloudy.network
 
+import com.example.cloudy.model.AlertResponse
 import com.example.cloudy.model.WeatherResponse
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -14,14 +15,30 @@ interface ApiService {
         @Query("appid") apiKey: String,
         @Query("units") units:String
     ): WeatherResponse
+
+    @GET("onecall")
+    suspend fun getWeatherAlert(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("appid") apiKey: String
+    ): AlertResponse
 }
 
 
 
-object RetrofitHelper{
-    const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
-    val retrofitInstance=Retrofit.Builder()
-        .baseUrl(BASE_URL)
+object RetrofitHelper {
+    // Base URL for the first API
+    private const val BASE_URL_1 = "https://api.openweathermap.org/data/2.5/"
+
+    private const val BASE_URL_2 = "https://api.openweathermap.org/data/3.0/"
+
+    val retrofitInstance1 = Retrofit.Builder()
+        .baseUrl(BASE_URL_1)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    val retrofitInstance2 = Retrofit.Builder()
+        .baseUrl(BASE_URL_2)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 }

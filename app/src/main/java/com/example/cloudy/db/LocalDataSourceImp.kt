@@ -42,9 +42,21 @@ class LocalDataSourceImp(context: Context) :LocalDataSource{
         return alertDao.getAllAlerts()
     }
 
+    override suspend fun deleteAlert(alert: Alert) {
+        alertDao.deleteAlert(alert)
+    }
+
     //Alert Data
     override suspend fun insertAlertData(alert: AlertData) {
        alertDataDao.addAlertData(alert)
+    }
+
+    override fun getAlertData(): Flow<List<AlertData>> {
+        return alertDataDao.getAlertData()
+    }
+
+    override suspend fun deleteAlertData(alert: AlertData) {
+        alertDataDao.deleteAlertData(alert)
     }
 
 }
