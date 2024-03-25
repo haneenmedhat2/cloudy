@@ -77,6 +77,8 @@ class AddDialogFragment : DialogFragment() {
             DatePickerDialog(requireContext(), { _, year, month, dayOfMonth ->
                 selectedDate = "$dayOfMonth/${month + 1}/$year"
             }, year, month, day)
+        datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+
         datePickerDialog.show()
     }
 

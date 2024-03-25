@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
@@ -29,6 +31,10 @@
 
         <receiver
             android:name=".alert.view.NotificationAlert"
+            android:enabled="true"/>
+
+        <receiver
+            android:name=".alert.view.SoundAlert"
             android:enabled="true"/>
         <!--
              TODO: Before you run your application, you need a Google Maps API key.

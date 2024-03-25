@@ -6,12 +6,15 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.getIntent
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.cloudy.HomeActivity
 import com.example.cloudy.R
 
 const val notificationID= 1
 const val channelID="CHANNEL_ID"
+private const val TAG = "NotificationAlert"
 class NotificationAlert : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val notificationIntent = Intent(context, HomeActivity::class.java)
@@ -19,14 +22,16 @@ class NotificationAlert : BroadcastReceiver() {
             context,
             0,
             notificationIntent,
-            PendingIntent.FLAG_IMMUTABLE // You might use another flag if needed
+            PendingIntent.FLAG_IMMUTABLE
         )
 
+        val alertDescription = intent!!.getStringExtra("alertDescription")
+        Log.i(TAG, "onViewCreated: $alertDescription")
         val builder = NotificationCompat.Builder(context!!, channelID)
-            .setContentTitle("Foreground Service")
-            .setContentText("Downloading and saving image...")
+            .setContentTitle("Weather Alert")
+            .setContentText(alertDescription)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.cloud)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
             .build()
