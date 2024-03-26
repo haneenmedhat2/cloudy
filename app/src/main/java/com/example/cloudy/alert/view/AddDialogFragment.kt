@@ -2,7 +2,11 @@ package com.example.cloudy.alert.view
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +23,7 @@ class AddDialogFragment : DialogFragment() {
     private var selectedDate: String? = null
     private var selectedTime: String? = null
     private var radioButtonValue: Int = -1
+    val REQUEST_OVERLAY_PERMISSION = 123
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +37,14 @@ class AddDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + requireContext().packageName)
+            )
+            startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION)
+        }
 
 
         binding.btnSave.setOnClickListener {

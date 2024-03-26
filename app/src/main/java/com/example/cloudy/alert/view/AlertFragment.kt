@@ -58,6 +58,9 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
     private lateinit var alertAdapter: AlertAdapter
     private lateinit var alertLayoutManager: LinearLayoutManager
 
+    private val soundAlert = SoundAlert()
+
+
 
     var date: String = " "
     var time: String = " "
@@ -95,6 +98,14 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
 
         viewModel = ViewModelProvider(this, viewFactory).get(AlertViewModel::class.java)
 
+     /*   viewLifecycleOwner.lifecycleScope.launch {
+            soundAlert.sharedFlow.collect { cityNme ->
+                val list=viewModel.alertData.value
+                val filteredList = list.filter { it!!.cityName == cityNme }
+                viewModel.deleteAlertData(filteredList[0]!!)
+
+            }
+        }*/
 
         lifecycleScope.launch {
             viewModel.alertData.collectLatest { alertData ->
@@ -151,7 +162,7 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
                                             scheduleNotification(timeDifference, i)
                                         }
                                         if (alertDatabase.alertType==2){
-                                            setAlarmWithSound(requireContext(),timeDifference)
+                                            setAlarmWithSound(requireContext(),timeDifference,alertDatabase.cityName)
                                         }
 
                                     }
@@ -304,10 +315,11 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
     }
 
     @SuppressLint("ScheduleExactAlarm")
-    fun setAlarmWithSound(context: Context, alarmTime: Long) {
+    fun setAlarmWithSound(context: Context, alarmTime: Long,cityName:String) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, SoundAlert::class.java).let { intent ->
             intent.putExtra("alertDescription",alertDescription)
+            intent.putExtra("cityName",cityName)
 
             PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         }

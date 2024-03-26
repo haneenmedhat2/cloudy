@@ -24,19 +24,17 @@ import com.example.cloudy.alert.viewmodel.AlertViewModelFactory
 import com.example.cloudy.db.LocalDataSourceImp
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 class SoundAlert : BroadcastReceiver() {
-    private lateinit var viewFactory: AlertViewModelFactory
-    private lateinit var viewModel: AlertViewModel
+   // private val _sharedFlow = MutableSharedFlow<String>()
+    //val sharedFlow = _sharedFlow.asSharedFlow()
+    var cityName = ""
 
     override fun onReceive(context: Context?, intent: Intent?) {
 
-        viewFactory = AlertViewModelFactory(
-            WeatherRepositoryImp.getInstance
-                (WeatherRemoteDataSourceImp.getInstance(), LocalDataSourceImp(context!!))
-        )
-
-        viewModel = ViewModelProvider(AlertFragment::class.java, viewFactory).get(AlertViewModel::class.java)
         val notificationManager = NotificationManagerCompat.from(context!!)
 
         // Create notification channel for devices running Android Oreo and above
@@ -51,8 +49,10 @@ class SoundAlert : BroadcastReceiver() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Create notification with looping sound and dismiss action
         val alertDescription = intent!!.getStringExtra("alertDescription")
+        cityName = intent!!.getStringExtra("cityName").toString()
+
+
         val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val notificationBuilder = NotificationCompat.Builder(context, "alarm_channel")
             .setSmallIcon(R.drawable.cloud)
@@ -77,19 +77,30 @@ class SoundAlert : BroadcastReceiver() {
         startAlarmSound(context, alarmUri)
     }
 
-    private fun startAlarmSound(context: Context, alarmUri: Uri) {
-        val mediaPlayer = MediaPlayer.create(context, alarmUri)
-        mediaPlayer.isLooping = true
-        mediaPlayer.start()
-    }
+    companion object {
+        const val NOTIFICATION_ID = 1
+        private var mediaPlayer: MediaPlayer? = null
 
+        fun startAlarmSound(context: Context, alarmUri: Uri) {
+            stopAlarmSound() // Make sure to stop any existing sound first
+            mediaPlayer = MediaPlayer.create(context, alarmUri).apply {
+                isLooping = true
+                start()
+            }
+        }
+
+        fun stopAlarmSound() {
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }
+    }
     private fun getDismissIntent(context: Context): PendingIntent {
-        val intent = Intent(context, HomeActivity::class.java)
-        viewModel.deleteAlertData()
-        return PendingIntent.getActivity(
+        val dismissIntent = Intent(context, DismissSoundAlert::class.java)
+        return PendingIntent.getBroadcast(
             context,
             0,
-            intent,
+            dismissIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
