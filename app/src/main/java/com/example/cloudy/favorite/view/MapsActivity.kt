@@ -47,8 +47,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         binding = ActivityMapsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        search=findViewById(R.id.etName)
-        add=findViewById(R.id.add_database)
 
         viewFactory=CityViewModelFactory(  WeatherRepositoryImp.getInstance
             (WeatherRemoteDataSourceImp.getInstance(),LocalDataSourceImp(this@MapsActivity)))
@@ -59,7 +57,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         var query=""
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
 
-        add.setOnClickListener {
+        binding.addDatabase.setOnClickListener {
             if (query.isNotBlank()){
                 val cityName = query
                 val cityAddress = cityList[0]
@@ -81,7 +79,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
 
 
-        search.addTextChangedListener(object : TextWatcher {
+        binding.etName.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
 

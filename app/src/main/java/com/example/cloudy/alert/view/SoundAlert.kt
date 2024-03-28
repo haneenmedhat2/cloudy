@@ -29,9 +29,6 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 class SoundAlert : BroadcastReceiver() {
-   // private val _sharedFlow = MutableSharedFlow<String>()
-    //val sharedFlow = _sharedFlow.asSharedFlow()
-    var cityName = ""
 
     override fun onReceive(context: Context?, intent: Intent?) {
 
@@ -50,9 +47,6 @@ class SoundAlert : BroadcastReceiver() {
         }
 
         val alertDescription = intent!!.getStringExtra("alertDescription")
-        cityName = intent!!.getStringExtra("cityName").toString()
-
-
         val alarmUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val notificationBuilder = NotificationCompat.Builder(context, "alarm_channel")
             .setSmallIcon(R.drawable.cloud)

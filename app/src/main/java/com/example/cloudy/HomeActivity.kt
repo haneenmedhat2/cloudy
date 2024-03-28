@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.cloudy.alert.view.AlertFragment
 import com.example.cloudy.favorite.view.FavoriteFragment
 import com.example.cloudy.home.view.HomeFragment
+import com.example.cloudy.settings.SettingsFragment
 import com.google.android.material.navigation.NavigationView
 
 

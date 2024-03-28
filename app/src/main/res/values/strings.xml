@@ -53,4 +53,5 @@
     <string name="add_to_favorite">Add to Favorite</string>
     <string name="title_activity_maps_alert">MapsAlertActivity</string>
     <string name="set_alarm">Set Alarm</string>
+    <string name="title_activity_settings_maps">SettingsMapsActivity</string>
 </resources>

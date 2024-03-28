@@ -61,6 +61,7 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
 
 
         viewModel = ViewModelProvider(this, viewFactory).get(CityViewModel::class.java)
+
         add.setOnClickListener {
             val intent = Intent(requireContext(), MapsActivity::class.java)
             startActivity(intent)

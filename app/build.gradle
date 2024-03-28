@@ -96,5 +96,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1'
 
+    implementation 'info.hoang8f:android-segmented:1.0.6'
+
+
 
 }

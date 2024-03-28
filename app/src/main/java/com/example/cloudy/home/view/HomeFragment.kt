@@ -29,6 +29,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cloudy.utility.ApiState
 import com.example.cloudy.R
+import com.example.cloudy.databinding.FragmentHomeBinding
+import com.example.cloudy.databinding.FragmentSettingsBinding
 import com.example.cloudy.utility.Util
 import com.example.cloudy.db.LocalDataSourceImp
 import com.example.cloudy.home.viewmodel.HomeViewModel
@@ -36,6 +38,7 @@ import com.example.cloudy.home.viewmodel.HomeViewModelFactory
 import com.example.cloudy.model.WeatherItem
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
+import com.example.cloudy.settings.SettingsMapsActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -51,30 +54,26 @@ private const val TAG = "HomeFragment"
 const val REQUEST_LOCATION_CODE= 2005
 
 class HomeFragment : Fragment() {
+    private lateinit var binding: FragmentHomeBinding
+
     lateinit var fudedLocation: FusedLocationProviderClient
     lateinit var location: Location
+
     lateinit var weatherFactory: HomeViewModelFactory
     lateinit var viewModel: HomeViewModel
-    private lateinit var recyclerView1: RecyclerView
-    private lateinit var recyclerView2: RecyclerView
+
     private lateinit var dayAdapter: DayWeatherAdapter
     private lateinit var weakAdapter: WeakAdapter
+
     private lateinit var dayLayoutManager: LinearLayoutManager
     private lateinit var weakLayoutManager: LinearLayoutManager
-    private lateinit var tvLocation: TextView
-    private lateinit var tvDate: TextView
-    private lateinit var _weather: TextView
-    private lateinit var degree: TextView
-    private lateinit var humidity: TextView
-    private lateinit var wind: TextView
-    private lateinit var pressure: TextView
-    private lateinit var cloud: TextView
-    private lateinit var image: ImageView
-    private lateinit var progressBar: ProgressBar
+
 
     var dayList = mutableListOf<WeatherItem>()
     var weakList = mutableListOf<WeatherItem>()
 
+    var cityLat= 0.0
+    var cityLong=0.0
 
     var longitude=0.0
     var latitude=0.0
@@ -83,7 +82,8 @@ override  fun onCreateView(
     savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    binding = FragmentHomeBinding.inflate(inflater, container, false)
+    return binding.root
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -103,44 +103,50 @@ override  fun onCreateView(
             )
         }
 
+        lifecycleScope.launch {
+            SettingsMapsActivity._cityList.collectLatest { city ->
+                if (city.isNotEmpty()){
+                    cityLat= city[0].lat
+                    Log.i(TAG, "onViewCreated: $cityLat")
+                    cityLong= city[0].lon
+                    Log.i(TAG, "onViewCreated: $cityLong")
+                }
+
+            }
+
+        }
+
+
+
         weatherFactory= HomeViewModelFactory(
             WeatherRepositoryImp.getInstance(WeatherRemoteDataSourceImp.getInstance(),LocalDataSourceImp(requireContext())))
         viewModel= ViewModelProvider(this,weatherFactory).get(HomeViewModel::class.java)
 
-        recyclerView1=view.findViewById(R.id.rv_day)
-        recyclerView2=view.findViewById(R.id.rv_weak)
 
-        tvLocation=view.findViewById(R.id.tv_current_location)
-        tvDate=view.findViewById(R.id.tv_date)
-        _weather=view.findViewById(R.id.tv_weather)
-        degree =view.findViewById(R.id.tv_degree)
-        humidity =view.findViewById(R.id.tv_humidity)
-        wind = view.findViewById(R.id.tv_wind_speed)
-        cloud=view.findViewById(R.id.tv_cloud)
-        pressure = view.findViewById(R.id.tv_pressure)
-        image =view.findViewById(R.id.ivPhoto)
-        progressBar=view.findViewById(R.id.progress)
 
 
         val formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM")
         val current = LocalDateTime.now().format(formatter)
-        tvDate.text=current
+        binding.tvDate.text=current
 
         dayAdapter = DayWeatherAdapter()
         dayLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.HORIZONTAL, false)
-        recyclerView1.apply {
+        binding.rvDay
+            .apply {
             adapter = dayAdapter
             layoutManager = dayLayoutManager
         }
 
         weakAdapter = WeakAdapter()
         weakLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-        recyclerView2.apply {
+        binding.rvWeak.apply {
             adapter = weakAdapter
             layoutManager = weakLayoutManager
         }
+          if (cityLat==0.0 && cityLong==0.0){
+              setUpLocationRequest()
 
-        setUpLocationRequest()
+          }
 
     }
 
@@ -243,48 +249,54 @@ override  fun onCreateView(
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchWeatherData() {
-        viewModel.getWeather(latitude, longitude, Util.API_KEY, "metric")
+        if (cityLat==0.0 && cityLong==0.0){
+            viewModel.getWeather(latitude, longitude, Util.API_KEY, "metric")
+
+        }else{
+            viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "metric")
+
+        }
         lifecycleScope.launch {
             viewModel.weatherList.collectLatest { weatherList ->
                 when(weatherList) {
                     is ApiState.Loading -> {
-                        recyclerView1.visibility = View.GONE
-                        recyclerView2.visibility = View.GONE
-                        progressBar.visibility = View.VISIBLE
+                        binding.rvDay.visibility = View.GONE
+                        binding.rvWeak.visibility = View.GONE
+                        binding.progress.visibility = View.VISIBLE
                     }
 
                     is ApiState.Success -> {
-                        recyclerView1.visibility = View.VISIBLE
-                        recyclerView2.visibility = View.VISIBLE
-                        progressBar.visibility = View.GONE
+                        binding.rvDay.visibility = View.VISIBLE
+                        binding.rvWeak.visibility = View.VISIBLE
+                        binding.progress.visibility = View.GONE
                         val weatherData = weatherList.data
                         weatherData?.let {
-                            _weather.text = weatherData.list[0].weather[0].description
-                            degree.text = "${weatherData.list[0].main.temp}°C"
-                            humidity.text = "${weatherData.list[0].main.humidity}%"
-                            pressure.text = "${weatherData.list[0].main.pressure} hPa"
-                            wind.text = "${weatherData.list[0].wind.speed} m/s"
-                            tvLocation.text = weatherData.city.name
-                            cloud.text = weatherData.list[0].clouds.all.toString()
+                            binding.tvWeather.text = weatherData.list[0].weather[0].description
+                            binding.tvDegree.text = "${weatherData.list[0].main.temp}°C"
+                            binding.tvHumidity.text = "${weatherData.list[0].main.humidity}%"
+                            binding.tvPressure.text = "${weatherData.list[0].main.pressure} hPa"
+                            binding.tvWindSpeed.text = "${weatherData.list[0].wind.speed} m/s"
+                            binding.tvCurrentLocation.text = weatherData.city.name
+                            binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
                             var icon = weatherData.list[0].weather[0].icon
 
                             if (icon == "01d" || icon == "01n") {
-                                image.setImageResource(R.drawable.sunny)
+                                binding.ivPhoto.setImageResource(R.drawable.sunny)
                             }
                             if (icon == "02d" || icon == "02n" || icon == "03d" || icon == "03n" || icon == "04d" || icon == "04n") {
-                                image.setImageResource(R.drawable.cloud)
+                                binding.ivPhoto.setImageResource(R.drawable.cloud)
                             }
                             if (icon == "09d" || icon == "09n" || icon == "10d" || icon == "10n") {
-                                image.setImageResource(R.drawable.rain)
+                                binding.ivPhoto.setImageResource(R.drawable.rain)
                             }
                             if (icon == "11d" || icon == "11n") {
-                                image.setImageResource(R.drawable.thunder)
+                                binding.ivPhoto.setImageResource(R.drawable.thunder)
                             }
                             if (icon == "13d" || icon == "13n") {
-                                image.setImageResource(R.drawable.snow)
+                                binding.ivPhoto.setImageResource(R.drawable.snow)
                             }
                             if (icon == "50d" || icon == "50n") {
-                                image.setImageResource(R.drawable.mist)
+                                binding.ivPhoto.setImageResource(R.drawable.mist)
                             }
 
                             Log.i(TAG, "onCreate: ${weatherData.city.name}")
@@ -312,7 +324,7 @@ override  fun onCreateView(
                     }
 
                     else -> {
-                        progressBar.visibility = View.GONE
+                        binding.progress.visibility = View.GONE
                         Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
                     }
                 }
