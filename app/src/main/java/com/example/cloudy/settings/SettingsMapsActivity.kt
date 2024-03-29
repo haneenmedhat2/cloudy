@@ -36,15 +36,19 @@ class SettingsMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var search: EditText
     private lateinit var add: FloatingActionButton
-    var cityList:MutableList<Address> = mutableListOf()
+    var city:MutableList<Address> = mutableListOf()
 
     var sharedFlow= MutableSharedFlow<String>()
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivitySettingsMapsBinding
+
     companion object{
-        var _cityList = MutableStateFlow<List<Coord>>(emptyList())
+        private var _cityList = MutableStateFlow<List<Coord>>(emptyList())
+        var cityList=_cityList.asStateFlow()
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,7 +62,7 @@ class SettingsMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.addDatabase.setOnClickListener {
             if (query.isNotBlank()){
                 val cityName = query
-                val cityAddress = cityList[0]
+                val cityAddress = city[0]
                 val cityLat =  cityAddress.latitude
                 val cityLong = cityAddress.longitude
                 _cityList.value= listOf(Coord(cityLat,cityLong))
@@ -66,8 +70,6 @@ class SettingsMapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 lifecycleScope.launch {
                     if (cityLat!=0.0 && cityLong!=0.0){
                         val intent=Intent(this@SettingsMapsActivity,HomeActivity::class.java)
-                        intent.putExtra("lat",cityLat)
-                        intent.putExtra("long",cityLong)
                         startActivity(intent)
                     }
 
@@ -104,8 +106,8 @@ class SettingsMapsActivity : AppCompatActivity(), OnMapReadyCallback {
             sharedFlow.collect { query ->
                 if (query.isNotBlank()){
                     try {
-                        cityList= geocoder.getFromLocationName(query,1)!!
-                        val address = cityList[0]
+                        city= geocoder.getFromLocationName(query,1)!!
+                        val address = city[0]
                         val latLng = LatLng(address.latitude, address.longitude)
 
                         mMap.addMarker(MarkerOptions().position(latLng).title(query))

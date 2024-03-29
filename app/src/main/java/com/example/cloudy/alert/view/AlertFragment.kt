@@ -98,15 +98,6 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
 
         viewModel = ViewModelProvider(this, viewFactory).get(AlertViewModel::class.java)
 
-     /*   viewLifecycleOwner.lifecycleScope.launch {
-            soundAlert.sharedFlow.collect { cityNme ->
-                val list=viewModel.alertData.value
-                val filteredList = list.filter { it!!.cityName == cityNme }
-                viewModel.deleteAlertData(filteredList[0]!!)
-
-            }
-        }*/
-
         lifecycleScope.launch {
             viewModel.alertData.collectLatest { alertData ->
                 if (alertData.isNotEmpty()) {
@@ -181,15 +172,12 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
         }
         var isVisible = false
         binding.btnSecFloat.hide()
-        binding.btnThirdFloat.hide()
         binding.btnAdd.setOnClickListener {
             if (!isVisible) {
                 binding.btnSecFloat.show()
-                binding.btnThirdFloat.show()
                 isVisible = true
             } else {
                 binding.btnSecFloat.hide()
-                binding.btnThirdFloat.hide()
                 isVisible = false
             }
         }
@@ -245,12 +233,6 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
             })
 
         }
-        binding.btnThirdFloat.setOnClickListener {
-            val intent = Intent(requireContext(), MapsAlertActivity::class.java)
-            startActivity(intent)
-        }
-
-
     }
 
     override fun onDeleteClick(alert: AlertData) {

@@ -35,19 +35,19 @@
              project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
              "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
         -->
+       <!-- <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" /> -->
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="YOUR_API_KEY" />
+            android:value="@string/apikey" />
 
         <activity
             android:name=".settings.SettingsMapsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings_maps" />
 
-        <service
-            android:name=".alert.view.AlertIntentService"
-            android:exported="false"
-            android:foregroundServiceType="shortService"></service>
 
         <receiver
             android:name=".alert.view.NotificationAlert"

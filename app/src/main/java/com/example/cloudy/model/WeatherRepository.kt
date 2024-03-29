@@ -16,12 +16,6 @@ interface WeatherRepository {
     suspend fun deleteCity(city: MapCity)
     fun getAllCities(): Flow<List<MapCity>>
 
-
-    //Alert Map
-    suspend fun insertAlert(alert: Alert)
-    fun getAllAlerts():Flow<List<Alert>>
-    suspend fun deleteAlert(alert: Alert)
-
     //Alert Data
     suspend fun insertAlertData(alert: AlertData)
     fun getAlertData():Flow<List<AlertData>>

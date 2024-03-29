@@ -19,7 +19,7 @@ class WeatherRepositoryImp(val remoteDataSource: WeatherRemoteDataSource,val loc
     }
 
     //Network//
-    override  fun getWeatherRepo(
+    override fun getWeatherRepo(
         latitude: Double,
         longitude: Double,
         apiKey: String,units:String
@@ -33,19 +33,6 @@ class WeatherRepositoryImp(val remoteDataSource: WeatherRemoteDataSource,val loc
         apiKey: String
     ): Flow<AlertResponse?> {
        return remoteDataSource.getWeatherAlert(latitude,longitude, apiKey)
-    }
-
-    //Alert
-     override suspend fun insertAlert(alert: Alert) {
-        localDataSource.insertAlert(alert)
-    }
-
-    override fun getAllAlerts(): Flow<List<Alert>> {
-        return localDataSource.getAllAlerts()
-    }
-
-    override suspend fun deleteAlert(alert: Alert) {
-        localDataSource.deleteAlert(alert)
     }
 
 

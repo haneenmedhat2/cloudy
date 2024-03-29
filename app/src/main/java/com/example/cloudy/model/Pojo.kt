@@ -11,7 +11,6 @@ data class WeatherResponse(
     val cnt: Int,
     val list: List<WeatherItem>,
     val city: City
-
 )
 
 
@@ -91,14 +90,9 @@ data class MapCity(
     val lon: Double
 )
 
-@Entity(tableName = "alert")
 data class Alert(
-    @NonNull
-    @PrimaryKey
     val cityName:String,
-    @NonNull
     val lat: Double,
-    @NonNull
     val lon: Double,
 
 )

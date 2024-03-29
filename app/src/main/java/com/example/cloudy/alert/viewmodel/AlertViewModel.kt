@@ -17,8 +17,6 @@ import kotlinx.coroutines.launch
 
 class AlertViewModel (private val repositoryImp: WeatherRepositoryImp): ViewModel() {
 
-    private var _alert = MutableStateFlow<List<Alert?>>(emptyList())
-    var alert= _alert.asStateFlow()
 
     private var _alertData = MutableStateFlow<List<AlertData?>>(emptyList())
     var alertData= _alertData.asStateFlow()
@@ -26,7 +24,6 @@ class AlertViewModel (private val repositoryImp: WeatherRepositoryImp): ViewMode
     private var _alertList = MutableStateFlow<ApiState<List<AlertResponse?>>>(ApiState.Loading)
     var alertList= _alertList.asStateFlow()
     init {
-        getAllAlert()
         getAlertData()
     }
 
@@ -64,30 +61,5 @@ class AlertViewModel (private val repositoryImp: WeatherRepositoryImp): ViewMode
              getAlertData()
          }
 
-    }
-
-       //Alert
-    fun inserAlert(alert: Alert) {
-        viewModelScope.launch {
-            repositoryImp.insertAlert(alert)
-
-        }
-    }
-
-
-     fun deleteAlert(alert: Alert) {
-          viewModelScope.launch {
-              repositoryImp.deleteAlert(alert)
-              getAllAlert()
-
-          }
-      }
-
-    fun getAllAlert(){
-        viewModelScope.launch{
-            repositoryImp.getAllAlerts().collect { alerts ->
-                _alert.value = alerts
-            }
-        }
     }
 }

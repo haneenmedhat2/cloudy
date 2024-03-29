@@ -38,6 +38,7 @@ import com.example.cloudy.home.viewmodel.HomeViewModelFactory
 import com.example.cloudy.model.WeatherItem
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
+import com.example.cloudy.settings.SettingsFragment
 import com.example.cloudy.settings.SettingsMapsActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -49,6 +50,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.math.log
 
 private const val TAG = "HomeFragment"
 const val REQUEST_LOCATION_CODE= 2005
@@ -103,26 +105,10 @@ override  fun onCreateView(
             )
         }
 
-        lifecycleScope.launch {
-            SettingsMapsActivity._cityList.collectLatest { city ->
-                if (city.isNotEmpty()){
-                    cityLat= city[0].lat
-                    Log.i(TAG, "onViewCreated: $cityLat")
-                    cityLong= city[0].lon
-                    Log.i(TAG, "onViewCreated: $cityLong")
-                }
-
-            }
-
-        }
-
-
 
         weatherFactory= HomeViewModelFactory(
             WeatherRepositoryImp.getInstance(WeatherRemoteDataSourceImp.getInstance(),LocalDataSourceImp(requireContext())))
         viewModel= ViewModelProvider(this,weatherFactory).get(HomeViewModel::class.java)
-
-
 
 
         val formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM")
@@ -143,10 +129,39 @@ override  fun onCreateView(
             adapter = weakAdapter
             layoutManager = weakLayoutManager
         }
-          if (cityLat==0.0 && cityLong==0.0){
-              setUpLocationRequest()
 
-          }
+        setUpLocationRequest()
+
+        lifecycleScope.launch {
+            SettingsMapsActivity.cityList.collectLatest { city ->
+                if (city.isNotEmpty()){
+                    cityLat= city[0].lat
+                    Log.i(TAG, "onViewCreated: $cityLat")
+                    cityLong= city[0].lon
+                    Log.i(TAG, "onViewCreated: $cityLong")
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            Log.i(TAG, "Check map or gps: ")
+            SettingsFragment.selectedOption.collectLatest { option ->
+                Log.i(TAG, "fetchWeatherData: $option")
+                if (option == "Map") {
+                    Log.i(TAG, "fetchWeatherData Map: lat=$cityLat long=$cityLong")
+                    fetchWeatherDataMaps()
+                }
+                if (option == "GPS") {
+                    Log.i(TAG, "fetchWeatherData GPS: lat =$latitude long=$longitude")
+                    fetchWeatherData()
+                }
+                if(option==null){
+                    fetchWeatherData()
+                }
+            }
+        }
+
+
 
     }
 
@@ -239,7 +254,7 @@ override  fun onCreateView(
                     latitude = location.latitude
                     Log.i(TAG, "onLocationResult: $longitude, $latitude")
                     fudedLocation.removeLocationUpdates(this)
-                    fetchWeatherData()
+                    //fetchWeatherData()
                 }
             },
             Looper.myLooper()
@@ -249,87 +264,169 @@ override  fun onCreateView(
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchWeatherData() {
-        if (cityLat==0.0 && cityLong==0.0){
-            viewModel.getWeather(latitude, longitude, Util.API_KEY, "metric")
 
-        }else{
-            viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "metric")
-
-        }
+        viewModel.getWeather(latitude, longitude, Util.API_KEY, "metric")
         lifecycleScope.launch {
             viewModel.weatherList.collectLatest { weatherList ->
-                when(weatherList) {
-                    is ApiState.Loading -> {
-                        binding.rvDay.visibility = View.GONE
-                        binding.rvWeak.visibility = View.GONE
-                        binding.progress.visibility = View.VISIBLE
-                    }
-
-                    is ApiState.Success -> {
-                        binding.rvDay.visibility = View.VISIBLE
-                        binding.rvWeak.visibility = View.VISIBLE
-                        binding.progress.visibility = View.GONE
-                        val weatherData = weatherList.data
-                        weatherData?.let {
-                            binding.tvWeather.text = weatherData.list[0].weather[0].description
-                            binding.tvDegree.text = "${weatherData.list[0].main.temp}°C"
-                            binding.tvHumidity.text = "${weatherData.list[0].main.humidity}%"
-                            binding.tvPressure.text = "${weatherData.list[0].main.pressure} hPa"
-                            binding.tvWindSpeed.text = "${weatherData.list[0].wind.speed} m/s"
-                            binding.tvCurrentLocation.text = weatherData.city.name
-                            binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
-                            var icon = weatherData.list[0].weather[0].icon
-
-                            if (icon == "01d" || icon == "01n") {
-                                binding.ivPhoto.setImageResource(R.drawable.sunny)
-                            }
-                            if (icon == "02d" || icon == "02n" || icon == "03d" || icon == "03n" || icon == "04d" || icon == "04n") {
-                                binding.ivPhoto.setImageResource(R.drawable.cloud)
-                            }
-                            if (icon == "09d" || icon == "09n" || icon == "10d" || icon == "10n") {
-                                binding.ivPhoto.setImageResource(R.drawable.rain)
-                            }
-                            if (icon == "11d" || icon == "11n") {
-                                binding.ivPhoto.setImageResource(R.drawable.thunder)
-                            }
-                            if (icon == "13d" || icon == "13n") {
-                                binding.ivPhoto.setImageResource(R.drawable.snow)
-                            }
-                            if (icon == "50d" || icon == "50n") {
-                                binding.ivPhoto.setImageResource(R.drawable.mist)
-                            }
-
-                            Log.i(TAG, "onCreate: ${weatherData.city.name}")
-
-                            val currentDateString =
-                                LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-
-
-                            var dayWeather = weatherData.list.subList(0, minOf(6, weatherData.list.size))
-
-                            dayList.addAll(dayWeather)
-                            dayAdapter.submitList(dayList)
-
-                            var weakWeather = weatherData.list
-                            var hashSet = HashSet<String>()
-                            weakWeather.forEach { weather ->
-                                var apidDate = weather.dt_txt.split(" ")[0]
-                                if (apidDate != currentDateString && hashSet.add(apidDate)) {
-                                    weakList.add(weather)
-                                }
-                            }
-                            weakAdapter.submitList(weakList)
+                    Log.i(TAG, "fetchWeatherData: first launch")
+                    when (weatherList) {
+                        is ApiState.Loading -> {
+                            binding.rvDay.visibility = View.GONE
+                            binding.rvWeak.visibility = View.GONE
+                            binding.progress.visibility = View.VISIBLE
                         }
 
-                    }
+                        is ApiState.Success -> {
+                            binding.rvDay.visibility = View.VISIBLE
+                            binding.rvWeak.visibility = View.VISIBLE
+                            binding.progress.visibility = View.GONE
+                            val weatherData = weatherList.data
+                            weatherData?.let {
+                                binding.tvWeather.text = weatherData.list[0].weather[0].description
+                                binding.tvDegree.text = "${weatherData.list[0].main.temp}°C"
+                                binding.tvHumidity.text = "${weatherData.list[0].main.humidity}%"
+                                binding.tvPressure.text = "${weatherData.list[0].main.pressure} hPa"
+                                binding.tvWindSpeed.text = "${weatherData.list[0].wind.speed} m/s"
+                                binding.tvCurrentLocation.text = weatherData.city.name
+                                binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
+                                var icon = weatherData.list[0].weather[0].icon
 
-                    else -> {
-                        binding.progress.visibility = View.GONE
-                        Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                                if (icon == "01d" || icon == "01n") {
+                                    binding.ivPhoto.setImageResource(R.drawable.sunny)
+                                }
+                                if (icon == "02d" || icon == "02n" || icon == "03d" || icon == "03n" || icon == "04d" || icon == "04n") {
+                                    binding.ivPhoto.setImageResource(R.drawable.cloud)
+                                }
+                                if (icon == "09d" || icon == "09n" || icon == "10d" || icon == "10n") {
+                                    binding.ivPhoto.setImageResource(R.drawable.rain)
+                                }
+                                if (icon == "11d" || icon == "11n") {
+                                    binding.ivPhoto.setImageResource(R.drawable.thunder)
+                                }
+                                if (icon == "13d" || icon == "13n") {
+                                    binding.ivPhoto.setImageResource(R.drawable.snow)
+                                }
+                                if (icon == "50d" || icon == "50n") {
+                                    binding.ivPhoto.setImageResource(R.drawable.mist)
+                                }
+
+                                Log.i(TAG, "onCreate: ${weatherData.city.name}")
+
+                                val currentDateString =
+                                    LocalDate.now()
+                                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
+
+                                var dayWeather =
+                                    weatherData.list.subList(0, minOf(6, weatherData.list.size))
+
+                                dayList.addAll(dayWeather)
+                                dayAdapter.submitList(dayList)
+
+                                var weakWeather = weatherData.list
+                                var hashSet = HashSet<String>()
+                                weakWeather.forEach { weather ->
+                                    var apidDate = weather.dt_txt.split(" ")[0]
+                                    if (apidDate != currentDateString && hashSet.add(apidDate)) {
+                                        weakList.add(weather)
+                                    }
+                                }
+                                weakAdapter.submitList(weakList)
+                            }
+
+                        }
+
+                        else -> {
+                            binding.progress.visibility = View.GONE
+                            Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
 
                 }
             }
         }
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun fetchWeatherDataMaps() {
+    viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "metric")
+    lifecycleScope.launch {
+        viewModel.weatherList.collectLatest { weatherList ->
+            Log.i(TAG, "fetchWeatherData: second launch")
+            when (weatherList) {
+                is ApiState.Loading -> {
+                    binding.rvDay.visibility = View.GONE
+                    binding.rvWeak.visibility = View.GONE
+                    binding.progress.visibility = View.VISIBLE
+                }
+
+                is ApiState.Success -> {
+                    binding.rvDay.visibility = View.VISIBLE
+                    binding.rvWeak.visibility = View.VISIBLE
+                    binding.progress.visibility = View.GONE
+                    val weatherData = weatherList.data
+                    weatherData?.let {
+                        binding.tvWeather.text = weatherData.list[0].weather[0].description
+                        binding.tvDegree.text = "${weatherData.list[0].main.temp}°C"
+                        binding.tvHumidity.text = "${weatherData.list[0].main.humidity}%"
+                        binding.tvPressure.text = "${weatherData.list[0].main.pressure} hPa"
+                        binding.tvWindSpeed.text = "${weatherData.list[0].wind.speed} m/s"
+                        binding.tvCurrentLocation.text = weatherData.city.name
+                        binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
+                        var icon = weatherData.list[0].weather[0].icon
+
+                        if (icon == "01d" || icon == "01n") {
+                            binding.ivPhoto.setImageResource(R.drawable.sunny)
+                        }
+                        if (icon == "02d" || icon == "02n" || icon == "03d" || icon == "03n" || icon == "04d" || icon == "04n") {
+                            binding.ivPhoto.setImageResource(R.drawable.cloud)
+                        }
+                        if (icon == "09d" || icon == "09n" || icon == "10d" || icon == "10n") {
+                            binding.ivPhoto.setImageResource(R.drawable.rain)
+                        }
+                        if (icon == "11d" || icon == "11n") {
+                            binding.ivPhoto.setImageResource(R.drawable.thunder)
+                        }
+                        if (icon == "13d" || icon == "13n") {
+                            binding.ivPhoto.setImageResource(R.drawable.snow)
+                        }
+                        if (icon == "50d" || icon == "50n") {
+                            binding.ivPhoto.setImageResource(R.drawable.mist)
+                        }
+
+                        Log.i(TAG, "onCreate: ${weatherData.city.name}")
+
+                        val currentDateString =
+                            LocalDate.now()
+                                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
+
+                        var dayWeather =
+                            weatherData.list.subList(0, minOf(6, weatherData.list.size))
+
+                        dayList.addAll(dayWeather)
+                        dayAdapter.submitList(dayList)
+
+                        var weakWeather = weatherData.list
+                        var hashSet = HashSet<String>()
+                        weakWeather.forEach { weather ->
+                            var apidDate = weather.dt_txt.split(" ")[0]
+                            if (apidDate != currentDateString && hashSet.add(apidDate)) {
+                                weakList.add(weather)
+                            }
+                        }
+                        weakAdapter.submitList(weakList)
+                    }
+
+                }
+
+                else -> {
+                    binding.progress.visibility = View.GONE
+                    Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        }
+    }
 }
+}
+

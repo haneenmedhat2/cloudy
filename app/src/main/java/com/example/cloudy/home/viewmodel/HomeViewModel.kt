@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.cloudy.utility.ApiState
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.model.WeatherResponse
+import com.example.cloudy.settings.SettingsFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,4 +28,6 @@ class HomeViewModel(private val repositoryImp:WeatherRepositoryImp):ViewModel() 
                    .collect { data -> _weatherList.value= ApiState.Success(data) }
         }
     }
+
+
 }

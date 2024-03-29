@@ -8,12 +8,10 @@ import kotlinx.coroutines.flow.Flow
 
 class LocalDataSourceImp(context: Context) :LocalDataSource{
 
-   private val alertDao:AlertDao
    private val dao:CityDao
     private val alertDataDao:AlertDataDao
     init {
         val db: CityDatabase = CityDatabase.getInstance(context)
-        alertDao = db.getAllAlerts()
         dao= db.getAllCities()
         alertDataDao=db.getAlertData()
     }
@@ -29,21 +27,6 @@ class LocalDataSourceImp(context: Context) :LocalDataSource{
 
     override fun getAllCities(): Flow<List<MapCity>> {
        return dao.getAllCities()
-    }
-
-
-    //Alert map
-    override suspend fun insertAlert(alert: Alert) {
-        alertDao.addAlert(alert)
-
-    }
-
-    override fun getAllAlerts(): Flow<List<Alert>> {
-        return alertDao.getAllAlerts()
-    }
-
-    override suspend fun deleteAlert(alert: Alert) {
-        alertDao.deleteAlert(alert)
     }
 
     //Alert Data
