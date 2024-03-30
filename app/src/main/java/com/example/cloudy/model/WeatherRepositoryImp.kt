@@ -23,9 +23,11 @@ class WeatherRepositoryImp(val remoteDataSource: WeatherRemoteDataSource,val loc
     override fun getWeatherRepo(
         latitude: Double,
         longitude: Double,
-        apiKey: String,units:String
+        apiKey: String,
+        language:String,
+        units:String
     ): Flow<WeatherResponse?> {
-        return remoteDataSource.getWeather(latitude,longitude,apiKey,units)
+        return remoteDataSource.getWeather(latitude,longitude,apiKey,language,units)
     }
 
     override fun getWeatherAlert(

@@ -7,77 +7,86 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
-import androidx.compose.ui.graphics.Color
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import com.example.cloudy.R
-import com.example.cloudy.databinding.FragmentAlertBinding
 import com.example.cloudy.databinding.FragmentSettingsBinding
-import com.example.cloudy.favorite.view.MapsActivity
+import com.example.cloudy.model.SettingsData
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.asSharedFlow
 
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
-
     private lateinit var sharedPreferences: SharedPreferences
-    private lateinit var editor :SharedPreferences.Editor
+    private lateinit var editor: SharedPreferences.Editor
 
 
-   companion object {
-        private val _selectedOption = MutableSharedFlow<String>()
-       var isMap=false
-       var isGPS= false
+    companion object {
+         var locationSP =-1
+        var languageSP=false
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedPreferences = requireContext().getSharedPreferences("radio_button_prefs", Context.MODE_PRIVATE)
+        editor = sharedPreferences.edit()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        sharedPreferences = requireContext().getSharedPreferences("radio_button_prefs", Context.MODE_PRIVATE)
-
+        sharedPreferences =
+            requireContext().getSharedPreferences("radio_button_prefs", Context.MODE_PRIVATE)
+        editor = sharedPreferences.edit()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            val locarionSP=sharedPreferences.getInt("selectedRadioButtonId", -1)
-             editor=sharedPreferences.edit()
 
-        if (locarionSP==1){
-            binding.buttonMap.isChecked=true
-        }else if(locarionSP==0){
-            binding.buttonGps.isChecked=true
+         locationSP = sharedPreferences.getInt("selectedRadioButtonId", -1)
+        if (locationSP == 1) {
+            binding.buttonMap.isChecked = true
+        } else if (locationSP == 0) {
+            binding.buttonGps.isChecked = true
         }
 
         binding.segmented1.setOnCheckedChangeListener { group, checkedId ->
-            if (checkedId==R.id.button_map){
-                editor.putInt("selectedRadioButtonId",1)
-            }else if (checkedId== R.id.button_gps){
-                editor.putInt("selectedRadioButtonId",0)
+            when (checkedId) {
+                R.id.button_map -> {
+                    editor.putInt("selectedRadioButtonId", 1)
+                    editor.apply()
+                }
+                R.id.button_gps -> {
+                    editor.putInt("selectedRadioButtonId", 0)
+                    editor.apply()
+                }
             }
-            editor.commit()
         }
 
-        binding.buttonMap.setOnClickListener {
-
-            isMap=true
-            isGPS=false
-            val intent = Intent(requireContext(), SettingsMapsActivity::class.java)
-            startActivity(intent)
+         languageSP = sharedPreferences.getBoolean("isEnglish", false)
+        if (languageSP) {
+            binding.buttonEng.isChecked = true
+        } else {
+            binding.buttonAr.isChecked = true
         }
 
-        binding.buttonGps.setOnClickListener {
-            isMap=false
-            isGPS=true
-
+        binding.segmented2.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.button_eng -> {
+                    editor.putBoolean("isEnglish", true)
+                    editor.putBoolean("isArabic", false)
+                    editor.apply()
+                }
+                R.id.button_ar -> {
+                    editor.putBoolean("isEnglish", false)
+                    editor.putBoolean("isArabic", true)
+                    editor.apply()
+                }
+            }
 
         }
 

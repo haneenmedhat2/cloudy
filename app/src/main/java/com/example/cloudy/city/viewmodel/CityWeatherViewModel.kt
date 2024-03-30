@@ -19,9 +19,9 @@ class CityWeatherViewModel(private val repositoryImp: IWeatherRepositoryImp):Vie
     var weatherList= _weatherList.asStateFlow()
 
 
-    fun getWeather(latitude: Double, longitude: Double, apiKey: String,metric:String) {
+    fun getWeather(latitude: Double, longitude: Double, apiKey: String,language:String,metric:String) {
         viewModelScope.launch(Dispatchers.IO) {
-               repositoryImp.getWeatherRepo(latitude, longitude, apiKey,metric)
+               repositoryImp.getWeatherRepo(latitude, longitude, apiKey,language,metric)
                    .catch { e ->
                        _weatherList.value= ApiState.Failure(e)
                    }

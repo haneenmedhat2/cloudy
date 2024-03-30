@@ -97,7 +97,7 @@ class CityWeatherActivity : AppCompatActivity() {
     }
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchWeatherData() {
-        viewModel.getWeather(lat, lon, Util.API_KEY, "metric")
+        viewModel.getWeather(lat, lon, Util.API_KEY, "en","metric")
         lifecycleScope.launch {
             viewModel.weatherList.collectLatest { weatherList ->
                 when(weatherList) {

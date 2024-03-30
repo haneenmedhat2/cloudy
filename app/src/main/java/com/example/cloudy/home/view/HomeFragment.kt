@@ -143,25 +143,7 @@ override  fun onCreateView(
             }
         }
 
-       /* lifecycleScope.launch {
-            Log.i(TAG, "Check map or gps: ")
-            SettingsFragment.selectedOption.collectLatest { option ->
-                Log.i(TAG, "fetchWeatherData: $option")
-                if (option == "Map") {
-                    Log.i(TAG, "fetchWeatherData Map: lat=$cityLat long=$cityLong")
-                    fetchWeatherDataMaps()
-                }
-                if (option == "GPS") {
-                    Log.i(TAG, "fetchWeatherData GPS: lat =$latitude long=$longitude")
-                    fetchWeatherData()
-                }
-                if(option==null){
-                    fetchWeatherData()
-                }
-            }
-        }*/
-
-        fetchWeatherData()
+       // fetchWeatherData()
 
 
     }
@@ -266,14 +248,20 @@ override  fun onCreateView(
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchWeatherData() {
 
-        if(SettingsFragment.isMap){
-            viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "metric")
+        if(SettingsFragment.locationSP==1){
+            viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "en","metric")
         }
-        if(SettingsFragment.isGPS){
-            viewModel.getWeather(latitude, longitude, Util.API_KEY, "metric")
+        if(SettingsFragment.locationSP==1 && !SettingsFragment.languageSP){
+            viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "ar","metric")
         }
-        if(!SettingsFragment.isMap && !SettingsFragment.isGPS){
-            viewModel.getWeather(latitude, longitude, Util.API_KEY, "metric")
+        if(SettingsFragment.locationSP==0){
+            viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","metric")
+        }
+        if(SettingsFragment.locationSP==0 && !SettingsFragment.languageSP){
+            viewModel.getWeather(latitude, longitude, Util.API_KEY, "ar","metric")
+        }
+        if(SettingsFragment.locationSP==-1){
+            viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","metric")
         }
 
         lifecycleScope.launch {
@@ -293,6 +281,7 @@ override  fun onCreateView(
                             val weatherData = weatherList.data
                             weatherData?.let {
                                 binding.tvWeather.text = weatherData.list[0].weather[0].description
+                                Log.i(TAG, "fetchWeatherData: ${weatherData.list[0].weather[0].description}")
                                 binding.tvDegree.text = "${weatherData.list[0].main.temp}°C"
                                 binding.tvHumidity.text = "${weatherData.list[0].main.humidity}%"
                                 binding.tvPressure.text = "${weatherData.list[0].main.pressure} hPa"

@@ -13,6 +13,7 @@ interface ApiService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
+        @Query("lang") language:String,
         @Query("units") units:String
     ): WeatherResponse
 

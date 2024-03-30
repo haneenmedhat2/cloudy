@@ -7,7 +7,9 @@ interface IWeatherRepositoryImp {
     fun getWeatherRepo(
         latitude: Double,
         longitude: Double,
-        apiKey: String, units: String
+        apiKey: String,
+        language:String,
+        units: String
     ): Flow<WeatherResponse?>
 
     fun getWeatherAlert(

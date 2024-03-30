@@ -35,10 +35,12 @@ class WeatherRemoteDataSourceImp private constructor():WeatherRemoteDataSource{
     override  fun getWeather(
         latitude: Double,
         longitude: Double,
-        apiKey: String,units:String
+        apiKey: String,
+        language:String,
+        units:String
     ): Flow<WeatherResponse?> {
         return flow {
-            val weather =   serviceObj1.getWeather(latitude, longitude, apiKey, units)
+            val weather =   serviceObj1.getWeather(latitude, longitude, apiKey, language,units)
             emit(weather)
         }
 
