@@ -5,7 +5,8 @@ import com.example.cloudy.network.WeatherRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 
 
-class WeatherRepositoryImp(val remoteDataSource: WeatherRemoteDataSource,val localDataSource: LocalDataSource):WeatherRepository {
+class WeatherRepositoryImp(val remoteDataSource: WeatherRemoteDataSource,val localDataSource: LocalDataSource):WeatherRepository,
+    IWeatherRepositoryImp {
 
     companion object{
         private var repo:WeatherRepositoryImp?=null

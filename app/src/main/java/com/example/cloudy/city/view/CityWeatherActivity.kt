@@ -19,6 +19,8 @@ import com.example.cloudy.R
 import com.example.cloudy.utility.Util
 import com.example.cloudy.city.viewmodel.CityWeatherViewModel
 import com.example.cloudy.city.viewmodel.CityWeatherViewModelFactory
+import com.example.cloudy.databinding.ActivityCityWeatherBinding
+import com.example.cloudy.databinding.ActivitySettingsMapsBinding
 import com.example.cloudy.db.LocalDataSourceImp
 import com.example.cloudy.home.view.DayWeatherAdapter
 import com.example.cloudy.home.view.WeakAdapter
@@ -35,26 +37,18 @@ import java.time.format.DateTimeFormatter
 const val REQUEST_LOCATION_CODE= 2005
 
 class CityWeatherActivity : AppCompatActivity() {
-    lateinit var fudedLocation: FusedLocationProviderClient
-    lateinit var location: Location
+
+     lateinit var binding:ActivityCityWeatherBinding
+
     lateinit var weatherFactory: CityWeatherViewModelFactory
     lateinit var viewModel: CityWeatherViewModel
-    private lateinit var recyclerView1: RecyclerView
-    private lateinit var recyclerView2: RecyclerView
+
     private lateinit var dayAdapter: DayWeatherAdapter
     private lateinit var weakAdapter: WeakAdapter
+
     private lateinit var dayLayoutManager: LinearLayoutManager
     private lateinit var weakLayoutManager: LinearLayoutManager
-    private lateinit var tvLocation: TextView
-    private lateinit var tvDate: TextView
-    private lateinit var _weather: TextView
-    private lateinit var degree: TextView
-    private lateinit var humidity: TextView
-    private lateinit var wind: TextView
-    private lateinit var pressure: TextView
-    private lateinit var cloud: TextView
-    private lateinit var image: ImageView
-    private lateinit var progressBar: ProgressBar
+
     var lat=0.0
     var lon=0.0
 
@@ -63,7 +57,9 @@ class CityWeatherActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_city_weather)
+        binding = ActivityCityWeatherBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
          lat=intent.getDoubleExtra("latitude",0.0)
          lon=intent.getDoubleExtra("longitude",0.0)
 
@@ -74,35 +70,23 @@ class CityWeatherActivity : AppCompatActivity() {
             ))
         viewModel= ViewModelProvider(this,weatherFactory).get(CityWeatherViewModel::class.java)
 
-        recyclerView1=findViewById(R.id.rv_day)
-        recyclerView2=findViewById(R.id.rv_weak)
 
-        tvLocation=findViewById(R.id.tv_current_location)
-        tvDate=findViewById(R.id.tv_date)
-        _weather=findViewById(R.id.tv_weather)
-        degree =findViewById(R.id.tv_degree)
-        humidity =findViewById(R.id.tv_humidity)
-        wind = findViewById(R.id.tv_wind_speed)
-        cloud=findViewById(R.id.tv_cloud)
-        pressure =findViewById(R.id.tv_pressure)
-        image =findViewById(R.id.ivPhoto)
-        progressBar=findViewById(R.id.progress)
 
 
         val formatter = DateTimeFormatter.ofPattern("EEEE, d MMMM")
         val current = LocalDateTime.now().format(formatter)
-        tvDate.text=current
+        binding.tvDate.text=current
 
         dayAdapter = DayWeatherAdapter()
         dayLayoutManager = LinearLayoutManager(this@CityWeatherActivity, RecyclerView.HORIZONTAL, false)
-        recyclerView1.apply {
+        binding.rvDay.apply {
             adapter = dayAdapter
             layoutManager = dayLayoutManager
         }
 
         weakAdapter = WeakAdapter()
         weakLayoutManager = LinearLayoutManager(this@CityWeatherActivity, RecyclerView.VERTICAL, false)
-        recyclerView2.apply {
+        binding.rvWeak.apply {
             adapter = weakAdapter
             layoutManager = weakLayoutManager
         }
@@ -118,43 +102,43 @@ class CityWeatherActivity : AppCompatActivity() {
             viewModel.weatherList.collectLatest { weatherList ->
                 when(weatherList) {
                     is ApiState.Loading -> {
-                        recyclerView1.visibility = View.GONE
-                        recyclerView2.visibility = View.GONE
-                        progressBar.visibility = View.VISIBLE
+                        binding.rvDay.visibility = View.GONE
+                        binding.rvWeak.visibility = View.GONE
+                        binding.progress.visibility = View.VISIBLE
                     }
 
                     is ApiState.Success -> {
-                        recyclerView1.visibility = View.VISIBLE
-                        recyclerView2.visibility = View.VISIBLE
-                        progressBar.visibility = View.GONE
+                        binding.rvDay.visibility = View.VISIBLE
+                        binding.rvWeak.visibility = View.VISIBLE
+                        binding.progress.visibility = View.GONE
                         val weatherData = weatherList.data
                         weatherData?.let {
-                            _weather.text = weatherData.list[0].weather[0].description
-                            degree.text = "${weatherData.list[0].main.temp}°C"
-                            humidity.text = "${weatherData.list[0].main.humidity}%"
-                            pressure.text = "${weatherData.list[0].main.pressure} hPa"
-                            wind.text = "${weatherData.list[0].wind.speed} m/s"
-                            tvLocation.text = weatherData.city.name
-                            cloud.text = weatherData.list[0].clouds.all.toString()
+                            binding.tvWeather.text = weatherData.list[0].weather[0].description
+                            binding.tvDegree.text = "${weatherData.list[0].main.temp}°C"
+                            binding.tvHumidity.text = "${weatherData.list[0].main.humidity}%"
+                            binding.tvPressure.text = "${weatherData.list[0].main.pressure} hPa"
+                            binding.tvWindSpeed.text = "${weatherData.list[0].wind.speed} m/s"
+                            binding.tvCurrentLocation.text = weatherData.city.name
+                            binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
                             var icon = weatherData.list[0].weather[0].icon
 
                             if (icon == "01d" || icon == "01n") {
-                                image.setImageResource(R.drawable.sunny)
+                                binding.ivPhoto.setImageResource(R.drawable.sunny)
                             }
                             if (icon == "02d" || icon == "02n" || icon == "03d" || icon == "03n" || icon == "04d" || icon == "04n") {
-                                image.setImageResource(R.drawable.cloud)
+                                binding.ivPhoto.setImageResource(R.drawable.cloud)
                             }
                             if (icon == "09d" || icon == "09n" || icon == "10d" || icon == "10n") {
-                                image.setImageResource(R.drawable.rain)
+                                binding.ivPhoto.setImageResource(R.drawable.rain)
                             }
                             if (icon == "11d" || icon == "11n") {
-                                image.setImageResource(R.drawable.thunder)
+                                binding.ivPhoto.setImageResource(R.drawable.thunder)
                             }
                             if (icon == "13d" || icon == "13n") {
-                                image.setImageResource(R.drawable.snow)
+                                binding.ivPhoto.setImageResource(R.drawable.snow)
                             }
                             if (icon == "50d" || icon == "50n") {
-                                image.setImageResource(R.drawable.mist)
+                                binding.ivPhoto.setImageResource(R.drawable.mist)
                             }
 
                             val currentDateString =
@@ -180,7 +164,7 @@ class CityWeatherActivity : AppCompatActivity() {
                     }
 
                     else -> {
-                        progressBar.visibility = View.GONE
+                        binding.progress.visibility = View.GONE
                         Toast.makeText(this@CityWeatherActivity, "Error", Toast.LENGTH_SHORT).show()
                     }
                 }

@@ -26,13 +26,12 @@ class SettingsFragment : Fragment() {
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor :SharedPreferences.Editor
 
+
    companion object {
         private val _selectedOption = MutableSharedFlow<String>()
-        val selectedOption: SharedFlow<String> = _selectedOption
+       var isMap=false
+       var isGPS= false
 
-        suspend fun setSelectedOption(option: String) {
-            _selectedOption.emit(option)
-        }
     }
 
 
@@ -68,17 +67,17 @@ class SettingsFragment : Fragment() {
         }
 
         binding.buttonMap.setOnClickListener {
-            lifecycleScope.launch {
-             setSelectedOption("Map")
-            }
+
+            isMap=true
+            isGPS=false
             val intent = Intent(requireContext(), SettingsMapsActivity::class.java)
             startActivity(intent)
         }
 
         binding.buttonGps.setOnClickListener {
-            lifecycleScope.launch {
-               setSelectedOption("GPS")
-            }
+            isMap=false
+            isGPS=true
+
 
         }
 
