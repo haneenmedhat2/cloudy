@@ -22,8 +22,10 @@ class SettingsFragment : Fragment() {
 
 
     companion object {
-         var locationSP =-1
-        var languageSP=false
+         var locationSP =0
+        var languageSP=true
+        var temperatureSP=1
+        var windSP=1
 
     }
 
@@ -89,6 +91,55 @@ class SettingsFragment : Fragment() {
             }
 
         }
+
+
+        temperatureSP = sharedPreferences.getInt("selectedTemperature", 1)
+        if (temperatureSP == 1) {
+            binding.buttonKelvin.isChecked = true
+        } else if (temperatureSP == 2) {
+            binding.buttonCelsius.isChecked = true
+        }else if (temperatureSP==3){
+            binding.buttonFahrenheit.isChecked=true
+        }
+
+        binding.segmented4.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.button_kelvin -> {
+                    editor.putInt("selectedTemperature",1)
+                    editor.apply()
+                }
+                R.id.button_celsius -> {
+                    editor.putInt("selectedTemperature", 2)
+                    editor.apply()
+                }
+                R.id.button_fahrenheit -> {
+                    editor.putInt("selectedTemperature", 3)
+                    editor.apply()
+                }
+            }
+        }
+
+
+        windSP = sharedPreferences.getInt("selectedWindUnit", 1)
+        if (windSP == 1) {
+            binding.buttonSec.isChecked = true
+        } else if (windSP == 2) {
+            binding.buttonHour.isChecked = true
+        }
+
+        binding.segmented4.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.button_sec -> {
+                    editor.putInt("selectedWindUnit",1)
+                    editor.apply()
+                }
+                R.id.button_hour -> {
+                    editor.putInt("selectedWindUnit", 2)
+                    editor.apply()
+                }
+            }
+        }
+
 
     }
 }

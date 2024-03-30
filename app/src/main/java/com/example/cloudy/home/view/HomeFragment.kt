@@ -142,10 +142,6 @@ override  fun onCreateView(
                 }
             }
         }
-
-       // fetchWeatherData()
-
-
     }
 
     override fun onRequestPermissionsResult(
@@ -248,20 +244,49 @@ override  fun onCreateView(
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchWeatherData() {
 
-        if(SettingsFragment.locationSP==1){
-            viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "en","metric")
+        if (SettingsFragment.windSP==1){
+            if(SettingsFragment.locationSP==1 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
+                viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "en","standard")
+            }
+            if(SettingsFragment.locationSP==1 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
+                viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "en","metric")
+            }
+            if(SettingsFragment.locationSP==1 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
+                viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "ar","standard")
+            }
+            if(SettingsFragment.locationSP==1 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
+                viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "ar","metric")
+            }
+            if(SettingsFragment.locationSP==0 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
+                viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","standard")
+            }
+            if(SettingsFragment.locationSP==0 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
+                viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","metric")
+            }
+            if(SettingsFragment.locationSP==0 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
+                viewModel.getWeather(latitude, longitude, Util.API_KEY, "ar","standard")
+            }
+            if(SettingsFragment.locationSP==0 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
+                viewModel.getWeather(latitude, longitude, Util.API_KEY, "ar","metric")
+            }
         }
-        if(SettingsFragment.locationSP==1 && !SettingsFragment.languageSP){
-            viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "ar","metric")
-        }
-        if(SettingsFragment.locationSP==0){
-            viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","metric")
-        }
-        if(SettingsFragment.locationSP==0 && !SettingsFragment.languageSP){
-            viewModel.getWeather(latitude, longitude, Util.API_KEY, "ar","metric")
+        if (SettingsFragment.windSP==2) {
+            if (SettingsFragment.locationSP == 1 && SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
+                viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "en", "imperial")
+            }
+            if (SettingsFragment.locationSP == 1 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
+                viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "ar", "imperial")
+            }
+            if (SettingsFragment.locationSP == 0 && SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
+                viewModel.getWeather(latitude, longitude, Util.API_KEY, "en", "imperial")
+            }
+
+            if (SettingsFragment.locationSP == 0 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
+                viewModel.getWeather(latitude, longitude, Util.API_KEY, "ar", "imperial")
+            }
         }
         if(SettingsFragment.locationSP==-1){
-            viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","metric")
+            viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","standard")
         }
 
         lifecycleScope.launch {
@@ -269,11 +294,12 @@ override  fun onCreateView(
                     Log.i(TAG, "fetchWeatherData: first launch")
                     when (weatherList) {
                         is ApiState.Loading -> {
-                            binding.rvDay.visibility = View.GONE
-                            binding.rvWeak.visibility = View.GONE
-                            binding.progress.visibility = View.VISIBLE
+                            binding.apply {
+                                rvDay.visibility = View.GONE
+                                rvWeak.visibility = View.GONE
+                                progress.visibility = View.VISIBLE
+                            }
                         }
-
                         is ApiState.Success -> {
                             binding.rvDay.visibility = View.VISIBLE
                             binding.rvWeak.visibility = View.VISIBLE
@@ -281,7 +307,6 @@ override  fun onCreateView(
                             val weatherData = weatherList.data
                             weatherData?.let {
                                 binding.tvWeather.text = weatherData.list[0].weather[0].description
-                                Log.i(TAG, "fetchWeatherData: ${weatherData.list[0].weather[0].description}")
                                 binding.tvDegree.text = "${weatherData.list[0].main.temp}°C"
                                 binding.tvHumidity.text = "${weatherData.list[0].main.humidity}%"
                                 binding.tvPressure.text = "${weatherData.list[0].main.pressure} hPa"
@@ -334,7 +359,6 @@ override  fun onCreateView(
                             }
 
                         }
-
                         else -> {
                             binding.progress.visibility = View.GONE
                             Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
@@ -344,7 +368,5 @@ override  fun onCreateView(
                 }
             }
         }
-
-
 }
 
