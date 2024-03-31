@@ -2,13 +2,14 @@ package com.example.cloudy.favorite.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.cloudy.model.IWeatherRepositoryImp
 import com.example.cloudy.model.MapCity
 import com.example.cloudy.model.WeatherRepositoryImp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class CityViewModel (private val repositoryImp: WeatherRepositoryImp): ViewModel() {
+class CityViewModel (private val repositoryImp: IWeatherRepositoryImp): ViewModel() {
 
     private var _cityList = MutableStateFlow<List<MapCity?>>(emptyList())
     var cityList= _cityList.asStateFlow()

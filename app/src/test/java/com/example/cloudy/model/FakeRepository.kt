@@ -10,16 +10,14 @@ class FakeRepository:IWeatherRepositoryImp {
     private var error: Throwable? = null
     private val fakeAlertResponse: AlertResponse? = null
     private val alertList: MutableList<AlertData> = mutableListOf()
-    private val cityList: MutableList<MapCity> = mutableListOf()
+     val cityList: MutableList<MapCity> = mutableListOf()
 
-    fun setWeatherResponse(response: WeatherResponse?) {
-        this.weatherResponse = response
-    }
 
     override fun getWeatherRepo(
         latitude: Double,
         longitude: Double,
         apiKey: String,
+        language: String,
         units: String
     ): Flow<WeatherResponse?> {
         return if (error != null) {

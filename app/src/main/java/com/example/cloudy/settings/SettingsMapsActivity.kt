@@ -113,11 +113,7 @@ class SettingsMapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         mMap.addMarker(MarkerOptions().position(latLng).title(query))
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
                     }catch (e:Exception){
-                        Toast.makeText(
-                            this@SettingsMapsActivity,
-                            "please enter correct name",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Log.i(TAG, "onCreate: error")
 
                     }
                 }

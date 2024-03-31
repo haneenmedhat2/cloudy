@@ -5,6 +5,7 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -105,11 +106,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                        mMap.addMarker(MarkerOptions().position(latLng).title(query))
                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10f))
                    }catch (e:Exception){
-                       Toast.makeText(
-                           this@MapsActivity,
-                           "please enter correct name",
-                           Toast.LENGTH_SHORT
-                       ).show()
+                       Log.i(TAG, "onCreate: error")
 
                    }
                }

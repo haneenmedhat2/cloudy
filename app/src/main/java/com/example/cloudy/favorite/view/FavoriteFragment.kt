@@ -1,5 +1,6 @@
 package com.example.cloudy.favorite.view
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -79,8 +80,19 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
 
     override fun onDeleteClick(city: MapCity) {
         lifecycleScope.launch {
-            viewModel.deleteCity(city)
-            Toast.makeText(requireContext(),"City deleted Successfully", Toast.LENGTH_SHORT).show()
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage("Are you sure you want to delete this?")
+                .setPositiveButton("Yes") { dialog, id ->
+                    viewModel.deleteCity(city)
+                    dialog.dismiss()
+                    Toast.makeText(requireContext(),"City deleted Successfully", Toast.LENGTH_SHORT).show()
+
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    dialog.dismiss()
+                }
+            val dialog = builder.create()
+            dialog.show()
         }
     }
 

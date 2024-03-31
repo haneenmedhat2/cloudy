@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.cloudy.model.IWeatherRepositoryImp
 import com.example.cloudy.utility.ApiState
-import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.model.WeatherResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +24,9 @@ class CityWeatherViewModel(private val repositoryImp: IWeatherRepositoryImp):Vie
                    .catch { e ->
                        _weatherList.value= ApiState.Failure(e)
                    }
-                   .collect { data -> _weatherList.value= ApiState.Success(data) }
+                   .collect { data ->
+                       _weatherList.value= ApiState.Success(data)
+                   }
 
         }
     }

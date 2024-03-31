@@ -36,7 +36,7 @@ class DayWeatherAdapter() : ListAdapter<WeatherItem, WeatherViewHolder>
         val time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"))
         val amOrPm = if (time.hour < 12) "AM" else "PM"
         holder.time.text="$timeString$amOrPm"
-        holder.degree.text= "${weather.main.temp}°C"
+        holder.degree.text= "${weather.main.temp} ${HomeFragment.unitStr}"
 
         var icon=weather.weather[0].icon
 

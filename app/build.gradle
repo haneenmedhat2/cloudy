@@ -11,6 +11,7 @@ android {
     compileSdk 34
 
     defaultConfig {
+        resConfigs("en","ar")
         applicationId "com.example.cloudy"
         minSdk 24
         targetSdk 34
@@ -107,7 +108,7 @@ dependencies {
 
     // AndroidX Test - Instrumented testing //Added Item here
    // androidTestImplementation "androidx.test:runner:1.5.21"
-    testImplementation "androidx.test:runner:1.5.21"
+    testImplementation "androidx.test:runner:1.5.0"
     androidTestImplementation "androidx.test:rules:1.5.0"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
 

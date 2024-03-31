@@ -96,13 +96,6 @@ data class Alert(
     val lon: Double,
 
 )
-
-data class SettingsData(
-    val selectedRadioButtonId: Int,
-    val isEnglish: Boolean
-)
-
-
 @Entity(tableName = "alert_data")
 data class AlertData(
     @NonNull

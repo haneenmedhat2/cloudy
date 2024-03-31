@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Cloudy</string>
+    <string name="Cloudy">Cloudy\n</string>
+    <string name="cloudy_quote">لا تقلق بشأن الطقس، نحن هنا جميعًا</string>
+    <!-- Headings -->
+    <string name="heading_one">دفع سريع وسهل</string>
+    <string name="heading_two">إشعارات فورية</string>
+    <string name="heading_three">دفع بدون نقد</string>
+    <string name="heading_fourth">الدفع في أي مكان</string>
+
+    <!-- Descriptions -->
+    <string name="desc_one">نمِّي عملك عن طريق قبول مدفوعات بطاقة باستخدام القارئ الجديد للبطاقات</string>
+    <string name="desc_two">لوريم إيبسوم دولور سيت أميت، كونسيكتيتور أديبيسينج إليت، سيد دو إيود مود تيمبور إنسيديدونت أوت لابوره إت دولوري ماغنا أليكوا</string>
+    <string name="desc_three">لوريم إيبسوم دولور سيت أميت، كونسيكتيتور أديبيسينج إليت، سيد دو إيود مود تيمبور إنسيديدونت أوت لابوره إت دولوري ماغنا أليكوا</string>
+    <string name="desc_fourth">لوريم إيبسوم دولور سيت أميت، كونسيكتيتور أديبيسينج إليت، سيد دو إيود مود تيمبور إنسيديدونت أوت لابوره إت دولوري ماغنا أليكوا</string>
+
+    <!-- Other strings -->
+    <string name="hello_blank_fragment">مرحبًا بك في الشاشة الفارغة</string>
+    <string name="title_activity_drawer">نشاط الشريط الجانبي</string>
+    <string name="navigation_drawer_open">فتح الشريط الجانبي للتنقل</string>
+    <string name="navigation_drawer_close">إغلاق الشريط الجانبي للتنقل</string>
+    <string name="nav_header_title">أندرويد ستوديو</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">رأسية للتنقل</string>
+    <string name="action_settings">الإعدادات</string>
+
+    <string name="menu_home">الرئيسية</string>
+    <string name="menu_gallery">المعرض</string>
+    <string name="menu_slideshow">عرض الشرائح</string>
+
+    <string name="title_onboarding_1">فحص الطقس الحالي</string>
+    <string name="description_onboarding_1">توفير معلومات حديثة بما في ذلك درجة الحرارة الحالية والرطوبة وسرعة الرياح والضغط.</string>
+
+    <string name="title_onboarding_2">تنبيهات الطقس</string>
+    <string name="description_onboarding_2">ضبط التنبيهات المتعلقة بالطقس الخاصة بمدة محددة مع نوع التنبيه قابل للتخصيص وخيارات لإيقاف الإشعارات.</string>
+
+    <string name="title_onboarding_3">خاصية الخريطة</string>
+    <string name="description_onboarding_3">وضع علامات على مدينة معينة على الخريطة، إضافة هذا الموقع إلى المفضلة لديك وعرض معلومات الطقس الخاصة به.</string>
+
+    <string name="start_text_advice">من خلال الاستمرار في هذا التطبيق، فإنك توافق على شروط الاستخدام وسياسة الخصوصية لدينا</string>
+
+    <string name="start">بدء</string>
+    <string name="skip">تخطي</string>
+    <string name="finish">انتهاء</string>
+    <string name="next">التالي</string>
+    <string name="back">السابق</string>
+    <string name="location">الموقع</string>
+    <string name="title_activity_maps">نشاط الخرائط</string>
+
+    <string name="open">فتح</string>
+    <string name="close">إغلاق</string>
+    <string name="apikey">AIzaSyAGJ01fbxTYOmB82OmqeTet0J45JHN9fOk</string>
+    <string name="add_to_favorite">إضافة إلى المفضلة</string>
+    <string name="title_activity_maps_alert">نشاط تنبيهات الخرائط</string>
+    <string name="set_alarm">تعيين التنبيه</string>
+    <string name="title_activity_settings_maps">نشاط إعدادات الخرائط</string>
+</resources>

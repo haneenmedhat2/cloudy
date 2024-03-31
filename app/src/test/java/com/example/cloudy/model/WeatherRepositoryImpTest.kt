@@ -50,9 +50,10 @@ class WeatherRepositoryImpTest{
         var lat=0.0
         var api="api"
         var units="metric"
+        var language="language"
 
         //when
-       var result= repositoryImp.getWeatherRepo(lon,lat,api,units).first()
+       var result= repositoryImp.getWeatherRepo(lon,lat,api,language,units).first()
 
         //then
      assertThat(result,`is` (weather))

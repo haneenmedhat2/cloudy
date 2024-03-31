@@ -3,23 +3,25 @@ package com.example.cloudy.settings
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Bundle
+import android.os.LocaleList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.cloudy.R
 import com.example.cloudy.databinding.FragmentSettingsBinding
-import com.example.cloudy.model.SettingsData
+import com.example.cloudy.utility.LanguageConfig
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import java.util.Locale
 
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-
 
     companion object {
          var locationSP =0
@@ -49,7 +51,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-         locationSP = sharedPreferences.getInt("selectedRadioButtonId", -1)
+         locationSP = sharedPreferences.getInt("selectedRadioButtonId", 0)
         if (locationSP == 1) {
             binding.buttonMap.isChecked = true
         } else if (locationSP == 0) {
@@ -69,7 +71,12 @@ class SettingsFragment : Fragment() {
             }
         }
 
-         languageSP = sharedPreferences.getBoolean("isEnglish", false)
+        binding.buttonMap.setOnClickListener {
+            val intent=Intent(requireContext(),SettingsMapsActivity::class.java)
+            startActivity(intent)
+        }
+
+         languageSP = sharedPreferences.getBoolean("isEnglish", true)
         if (languageSP) {
             binding.buttonEng.isChecked = true
         } else {
@@ -87,8 +94,10 @@ class SettingsFragment : Fragment() {
                     editor.putBoolean("isEnglish", false)
                     editor.putBoolean("isArabic", true)
                     editor.apply()
+
                 }
             }
+
 
         }
 
@@ -96,9 +105,11 @@ class SettingsFragment : Fragment() {
         temperatureSP = sharedPreferences.getInt("selectedTemperature", 1)
         if (temperatureSP == 1) {
             binding.buttonKelvin.isChecked = true
-        } else if (temperatureSP == 2) {
+        }
+        else if (temperatureSP == 2) {
             binding.buttonCelsius.isChecked = true
-        }else if (temperatureSP==3){
+        }
+        else {
             binding.buttonFahrenheit.isChecked=true
         }
 
@@ -119,15 +130,7 @@ class SettingsFragment : Fragment() {
             }
         }
 
-
-        windSP = sharedPreferences.getInt("selectedWindUnit", 1)
-        if (windSP == 1) {
-            binding.buttonSec.isChecked = true
-        } else if (windSP == 2) {
-            binding.buttonHour.isChecked = true
-        }
-
-        binding.segmented4.setOnCheckedChangeListener { group, checkedId ->
+        binding.segmented3.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.button_sec -> {
                     editor.putInt("selectedWindUnit",1)
@@ -138,8 +141,17 @@ class SettingsFragment : Fragment() {
                     editor.apply()
                 }
             }
+
+        }
+        windSP = sharedPreferences.getInt("selectedWindUnit", 1)
+        if (windSP == 1) {
+            binding.buttonSec.isChecked = true
+        } else if (windSP == 2) {
+            binding.buttonHour.isChecked = true
         }
 
 
     }
+
 }
+

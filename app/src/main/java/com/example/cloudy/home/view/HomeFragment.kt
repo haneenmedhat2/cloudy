@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
@@ -70,6 +71,11 @@ class HomeFragment : Fragment() {
     private lateinit var dayLayoutManager: LinearLayoutManager
     private lateinit var weakLayoutManager: LinearLayoutManager
 
+    private lateinit var citySP: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+
+
+
 
     var dayList = mutableListOf<WeatherItem>()
     var weakList = mutableListOf<WeatherItem>()
@@ -79,11 +85,25 @@ class HomeFragment : Fragment() {
 
     var longitude=0.0
     var latitude=0.0
-override  fun onCreateView(
+
+    companion object{
+        var unitStr=""
+        var windStr=""
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        citySP = requireContext().getSharedPreferences("radio_button_prefs", Context.MODE_PRIVATE)
+        editor = citySP.edit()
+    }
+
+    override  fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+    citySP = requireContext().getSharedPreferences("city_data", Context.MODE_PRIVATE)
+    editor = citySP.edit()
     binding = FragmentHomeBinding.inflate(inflater, container, false)
     return binding.root
     }
@@ -99,7 +119,7 @@ override  fun onCreateView(
             }
         }else{
             requestPermissions(
-                 arrayOf(
+                arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_CODE
             )
@@ -139,10 +159,24 @@ override  fun onCreateView(
                     Log.i(TAG, "onViewCreated: $cityLat")
                     cityLong= city[0].lon
                     Log.i(TAG, "onViewCreated: $cityLong")
+
+                    editor.putString("lat", cityLat.toString())
+                    editor.putString("lon", cityLong.toString())
+                    editor.apply()
+                    fetchWeatherData()
                 }
             }
         }
+
+        val valueString1 = citySP.getString("lat", null)
+         cityLat= (valueString1?.toDoubleOrNull()?: 0.0)
+
+        val valueString2 = citySP.getString("lon", null)
+         cityLong= (valueString2?.toDoubleOrNull()?: 0.0)
+
+
     }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -193,6 +227,7 @@ override  fun onCreateView(
                     latitude = location.latitude
                     Log.i(TAG, "onLocationResult: ${location.longitude}, ${location.latitude}")
                     fudedLocation.removeLocationUpdates(this)
+
                 }
             },
             Looper.myLooper()
@@ -243,50 +278,70 @@ override  fun onCreateView(
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchWeatherData() {
-
         if (SettingsFragment.windSP==1){
+            windStr="m/s"
             if(SettingsFragment.locationSP==1 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
                 viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "en","standard")
+                unitStr="K"
             }
-            if(SettingsFragment.locationSP==1 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
+            else if(SettingsFragment.locationSP==1 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
                 viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "en","metric")
+                unitStr="°C"
             }
-            if(SettingsFragment.locationSP==1 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
+            else if(SettingsFragment.locationSP==1 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
                 viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "ar","standard")
+                unitStr="K"
             }
-            if(SettingsFragment.locationSP==1 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
+            else if(SettingsFragment.locationSP==1 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
                 viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "ar","metric")
+                unitStr="°C"
             }
-            if(SettingsFragment.locationSP==0 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
+            else if(SettingsFragment.locationSP==0 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
                 viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","standard")
+                unitStr="K"
             }
-            if(SettingsFragment.locationSP==0 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
+            else if(SettingsFragment.locationSP==0 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
                 viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","metric")
+                unitStr="°C"
             }
-            if(SettingsFragment.locationSP==0 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
+            else if(SettingsFragment.locationSP==0 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
                 viewModel.getWeather(latitude, longitude, Util.API_KEY, "ar","standard")
+                unitStr="K"
             }
-            if(SettingsFragment.locationSP==0 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
+            else if(SettingsFragment.locationSP==0 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP==2){
                 viewModel.getWeather(latitude, longitude, Util.API_KEY, "ar","metric")
+                unitStr="°C"
+            }else{
+                viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","standard")
+                unitStr="K"
             }
         }
-        if (SettingsFragment.windSP==2) {
+        else if (SettingsFragment.windSP==2) {
+            windStr="m/hr"
             if (SettingsFragment.locationSP == 1 && SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
                 viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "en", "imperial")
+                unitStr="°F"
             }
-            if (SettingsFragment.locationSP == 1 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
+            else if (SettingsFragment.locationSP == 1 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
                 viewModel.getWeather(cityLat, cityLong, Util.API_KEY, "ar", "imperial")
+                unitStr="°F"
             }
-            if (SettingsFragment.locationSP == 0 && SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
+            else  if (SettingsFragment.locationSP == 0 && SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
                 viewModel.getWeather(latitude, longitude, Util.API_KEY, "en", "imperial")
+                unitStr="°F"
             }
 
-            if (SettingsFragment.locationSP == 0 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
+            else if (SettingsFragment.locationSP == 0 && !SettingsFragment.languageSP && SettingsFragment.temperatureSP == 3) {
                 viewModel.getWeather(latitude, longitude, Util.API_KEY, "ar", "imperial")
+                unitStr="°F"
+            }else{
+                viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","standard")
+                unitStr="K"
             }
         }
-        if(SettingsFragment.locationSP==-1){
+        else{
             viewModel.getWeather(latitude, longitude, Util.API_KEY, "en","standard")
+            unitStr="K"
         }
 
         lifecycleScope.launch {
@@ -307,10 +362,10 @@ override  fun onCreateView(
                             val weatherData = weatherList.data
                             weatherData?.let {
                                 binding.tvWeather.text = weatherData.list[0].weather[0].description
-                                binding.tvDegree.text = "${weatherData.list[0].main.temp}°C"
+                                binding.tvDegree.text = "${weatherData.list[0].main.temp} $unitStr"
                                 binding.tvHumidity.text = "${weatherData.list[0].main.humidity}%"
                                 binding.tvPressure.text = "${weatherData.list[0].main.pressure} hPa"
-                                binding.tvWindSpeed.text = "${weatherData.list[0].wind.speed} m/s"
+                                binding.tvWindSpeed.text = "${weatherData.list[0].wind.speed} $windStr"
                                 binding.tvCurrentLocation.text = weatherData.city.name
                                 binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
                                 var icon = weatherData.list[0].weather[0].icon

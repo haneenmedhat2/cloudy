@@ -53,7 +53,7 @@ class WeakAdapter() : ListAdapter<WeatherItem,WeakViewHolder >
         }
 
         holder.day.text=result
-        holder.degree.text= "${weather.main.temp} °C"
+        holder.degree.text= "${weather.main.temp} ${HomeFragment.unitStr}"
 
         var icon=weather.weather[0].icon
 
