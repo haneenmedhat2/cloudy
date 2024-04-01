@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.cloudy.HomeActivity
 import com.example.cloudy.R
 import com.example.cloudy.databinding.FragmentSettingsBinding
 import com.example.cloudy.utility.LanguageConfig
@@ -97,8 +98,15 @@ class SettingsFragment : Fragment() {
 
                 }
             }
+        }
+        binding.buttonAr.setOnClickListener {
+            setArabicLocale()
+            editor.putBoolean("isEnglish", false)
+            editor.putBoolean("isArabic", true)
+            editor.apply()
 
-
+            // Restart the activity to reflect the changes
+            requireActivity().recreate()
         }
 
 
@@ -152,6 +160,40 @@ class SettingsFragment : Fragment() {
 
 
     }
+
+    private fun changeAppLocale(context: Context, newLocale: Locale) {
+        val resources = context.resources
+        val configuration = resources.configuration
+        configuration.setLocale(newLocale)
+        resources.updateConfiguration(configuration, resources.displayMetrics)
+    }
+
+    private fun setArabicLocale() {
+        changeAppLocale(requireContext(), Locale("ar"))
+        listener.onLanguageChanged(false)
+        // Save the language preference
+        editor.putBoolean("isEnglish", false)
+        editor.putBoolean("isArabic", true)
+        editor.apply()
+
+        (activity as? HomeActivity)?.restartActivity()
+    }
+
+    interface OnLanguageChangeListener {
+        fun onLanguageChanged(isEnglish: Boolean)
+    }
+
+    private lateinit var listener: OnLanguageChangeListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnLanguageChangeListener) {
+            listener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement OnLanguageChangeListener")
+        }
+    }
+
 
 }
 

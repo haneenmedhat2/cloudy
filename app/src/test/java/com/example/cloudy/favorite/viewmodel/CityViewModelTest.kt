@@ -31,7 +31,7 @@ class CityViewModelTest {
     }
 
     @Test
-    fun insertCity_cityData()= runBlockingTest{
+    fun insertCity_cityData(){
         //Given
         val city= MapCity("city",0.0,0.0)
 
@@ -44,7 +44,7 @@ class CityViewModelTest {
 
 
     @Test
-    fun deleteCity_cityData()=runBlockingTest{
+    fun deleteCity_cityData(){
         //Given
         val city= MapCity("city",0.0,0.0)
 
@@ -56,7 +56,7 @@ class CityViewModelTest {
     }
 
     @Test
-    fun getAllCity_listOfCities()=runBlockingTest{
+    fun getAllCity_listOfCities(){
         //Given
 
         //When

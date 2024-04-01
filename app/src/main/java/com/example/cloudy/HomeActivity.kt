@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 
 private const val TAG = "HomeActivity"
-class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener{
+class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener,SettingsFragment.OnLanguageChangeListener{
 
     lateinit  var drawerLayout: DrawerLayout
     lateinit var navigationView: NavigationView
@@ -113,6 +113,15 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
         return true
     }
 
+    internal fun restartActivity() {
+        val intent = intent
+        finish()
+        startActivity(intent)
+    }
+    override fun onLanguageChanged(isEnglish: Boolean) {
+        restartActivity()
+
+    }
 
 
 }
