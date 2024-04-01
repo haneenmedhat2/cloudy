@@ -8,9 +8,11 @@ import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.LocaleList
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.cloudy.HomeActivity
 import com.example.cloudy.R
@@ -21,7 +23,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import java.util.Locale
 
-
+private const val TAG = "SettingsFragment"
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var sharedPreferences: SharedPreferences
@@ -119,20 +121,20 @@ class SettingsFragment : Fragment() {
             }
         }
         binding.buttonAr.setOnClickListener {
-            setArabicLocale()
             editor.putBoolean("isEnglish", false)
             editor.putBoolean("isArabic", true)
             editor.apply()
+            setArabicLocale(requireContext())
 
             // Restart the activity to reflect the changes
             requireActivity().recreate()
         }
 
         binding.buttonEng.setOnClickListener {
-            setEnglishLocale()
             editor.putBoolean("isEnglish", true)
             editor.putBoolean("isArabic", false)
             editor.apply()
+            setEnglishLocale(requireContext())
 
             // Restart the activity to reflect the changes
             requireActivity().recreate()
@@ -156,14 +158,17 @@ class SettingsFragment : Fragment() {
                 R.id.button_kelvin -> {
                     editor.putInt("selectedTemperature",1)
                     editor.apply()
+                    temperatureSP=1
                 }
                 R.id.button_celsius -> {
                     editor.putInt("selectedTemperature", 2)
                     editor.apply()
+                    temperatureSP=2
                 }
                 R.id.button_fahrenheit -> {
                     editor.putInt("selectedTemperature", 3)
                     editor.apply()
+                    temperatureSP=3
                 }
             }
         }
@@ -173,10 +178,31 @@ class SettingsFragment : Fragment() {
                 R.id.button_sec -> {
                     editor.putInt("selectedWindUnit",1)
                     editor.apply()
+                    windSP = 1
+                    // Check and update temperature selection if conflicting
+                    if (temperatureSP == 3) {
+                        // Prevent choosing button_sec with button_fahrenheit
+                        binding.segmented4.check(R.id.button_celsius)
+                        editor.putInt("selectedTemperature", 2)
+                        editor.apply()
+                        temperatureSP = 2
+                        Toast.makeText(requireContext(),"Fahrenhit can only be choosen with m/hr",Toast.LENGTH_SHORT).show()
+                    }
                 }
                 R.id.button_hour -> {
                     editor.putInt("selectedWindUnit", 2)
                     editor.apply()
+                    windSP = 2
+                    // Check and update temperature selection if conflicting
+                    if (temperatureSP == 1 || temperatureSP==2) {
+                        // Prevent choosing button_hour with button_kelvin
+                        binding.segmented4.check(R.id.button_celsius)
+                        editor.putInt("selectedTemperature", 2)
+                        editor.apply()
+                        temperatureSP = 2
+                        Toast.makeText(requireContext(),"Celsius/Kelvin can only be choosen with m/s",Toast.LENGTH_SHORT).show()
+
+                    }
                 }
             }
 
@@ -198,26 +224,26 @@ class SettingsFragment : Fragment() {
         resources.updateConfiguration(configuration, resources.displayMetrics)
     }
 
-    private fun setArabicLocale() {
-        changeAppLocale(requireContext(), Locale("ar"))
-        listener.onLanguageChanged(false)
-        // Save the language preference
+    private fun setArabicLocale(context: Context) {
+        changeAppLocale(context, Locale("ar"))
         editor.putBoolean("isEnglish", false)
         editor.putBoolean("isArabic", true)
         editor.apply()
-
-       (activity as? HomeActivity)?.restartActivity()
+        languageSP=false
+        Log.i(TAG, "setArabicLocale: $languageSP")
+        listener.onLanguageChanged(false)
+        requireActivity().recreate()
     }
 
-    private fun setEnglishLocale() {
-        changeAppLocale(requireContext(), Locale("en"))
-        listener.onLanguageChanged(false)
-        // Save the language preference
+    private fun setEnglishLocale(context: Context) {
+        changeAppLocale(context, Locale("en"))
         editor.putBoolean("isEnglish", true)
         editor.putBoolean("isArabic", false)
         editor.apply()
-
-        (activity as? HomeActivity)?.restartActivity()
+        languageSP=true
+        Log.i(TAG, "setEnglishLocale: $languageSP")
+         listener.onLanguageChanged(false)
+        requireActivity().recreate()
     }
 
     interface OnLanguageChangeListener {

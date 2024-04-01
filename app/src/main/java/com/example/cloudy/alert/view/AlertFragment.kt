@@ -40,6 +40,7 @@ import com.example.cloudy.favorite.viewmodel.CityViewModel
 import com.example.cloudy.favorite.viewmodel.CityViewModelFactory
 import com.example.cloudy.model.Alert
 import com.example.cloudy.model.AlertData
+import com.example.cloudy.model.MapCity
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
 import com.example.cloudy.utility.ApiState
@@ -62,6 +63,9 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
 
     private lateinit var alertAdapter: AlertAdapter
     private lateinit var alertLayoutManager: LinearLayoutManager
+
+    private val pendingIntentsMap = mutableMapOf<String, PendingIntent>()
+
 
     private val soundAlert = SoundAlert()
 
@@ -110,6 +114,22 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
         )
 
         viewModel = ViewModelProvider(this, viewFactory).get(AlertViewModel::class.java)
+
+        binding.swipper.setOnRefreshListener {
+            lifecycleScope.launch {
+                viewModel.getAlertData()
+                alertAdapter.submitList(viewModel.alertData.value)
+                binding.swipper.isRefreshing = false
+                if (viewModel.alertData.value.isNotEmpty()) {
+                    binding.tvAlert.visibility = View.GONE
+                    binding.ivNot.visibility = View.GONE
+                } else {
+                    binding.tvAlert.visibility = View.VISIBLE
+                    binding.ivNot.visibility = View.VISIBLE
+                }
+
+            }
+        }
 
         lifecycleScope.launch {
             viewModel.alertData.collectLatest { alertData ->
@@ -210,55 +230,59 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
                     )
                     startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION)
                 }
+                 if (viewModel2.cityList.value!= emptyList<MapCity>()) {
+                     val dialog = AddDialogFragment()
+                     dialog.show(childFragmentManager, "AddDialogFragment")
+                     dialog.setOnSaveClickListener(object : AddDialogFragment.OnSaveClickListener {
+                         override fun onSaveClick(
+                             selectedDate: String,
+                             selectedTime: String,
+                             radioButtonValue: Int
+                         ) {
+                             val message =
+                                 "Date: $selectedDate\nTime: $selectedTime\nSelected Option: $radioButtonValue"
+                             Toast.makeText(requireContext(), "Alert Added successfully", Toast.LENGTH_SHORT).show()
 
-                val dialog = AddDialogFragment()
-            dialog.show(childFragmentManager, "AddDialogFragment")
-            dialog.setOnSaveClickListener(object : AddDialogFragment.OnSaveClickListener {
-                override fun onSaveClick(
-                    selectedDate: String,
-                    selectedTime: String,
-                    radioButtonValue: Int
-                ) {
-                    val message =
-                        "Date: $selectedDate\nTime: $selectedTime\nSelected Option: $radioButtonValue"
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                             date = selectedDate
+                             time = selectedTime
+                             radioValue = radioButtonValue
 
-                    date = selectedDate
-                    time = selectedTime
-                    radioValue = radioButtonValue
-
-                    lifecycleScope.launch {
-                        viewModel2.cityList.collectLatest { alert ->
-                            if (alert.isNotEmpty()) {
-                                for (myAlert in alert) {
-                                    if (!date.isNullOrBlank() && !time.isNullOrBlank() && radioValue != -1) {
-                                        val alertData = AlertData(
-                                            myAlert!!.cityName,
-                                            myAlert.lat,
-                                            myAlert.lon,
-                                            date,
-                                            time,
-                                            radioValue
-                                        )
-                                        viewModel.inserAlertData(alertData)
-                                        date = ""
-                                        time = ""
-                                        radioValue = -1
-                                    }
-                                }
-                            } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "No alerts available",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
+                             lifecycleScope.launch {
+                                 viewModel2.cityList.collectLatest { alert ->
+                                     if (alert.isNotEmpty()) {
+                                         for (myAlert in alert) {
+                                             if (!date.isNullOrBlank() && !time.isNullOrBlank() && radioValue != -1) {
+                                                 val alertData = AlertData(
+                                                     myAlert!!.cityName,
+                                                     myAlert.lat,
+                                                     myAlert.lon,
+                                                     date,
+                                                     time,
+                                                     radioValue
+                                                 )
+                                                 viewModel.inserAlertData(alertData)
+                                                 date = ""
+                                                 time = ""
+                                                 radioValue = -1
+                                             }
+                                         }
+                                     } else {
+                                         Toast.makeText(
+                                             requireContext(),
+                                             "No alerts available",
+                                             Toast.LENGTH_SHORT
+                                         ).show()
+                                     }
+                                 }
+                             }
 
 
-                }
-            })
+                         }
+                     })
+                 }
+                else{
+                    Toast.makeText(requireContext(),"Please add city to favorite first",Toast.LENGTH_SHORT).show()
+                 }
 
         }
     }
@@ -270,8 +294,15 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
             builder.setMessage("Are you sure you want to delete this?")
                 .setPositiveButton("Yes") { dialog, id ->
                     viewModel.deleteAlertData(alert)
+                    val pendingIntentKey = generatePendingIntentKey(alert)
+                    val pendingIntent = pendingIntentsMap[pendingIntentKey]
+                    pendingIntent?.let { existingPendingIntent ->
+                        val alarmManager =
+                            requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                        alarmManager.cancel(existingPendingIntent)
+                        pendingIntentsMap.remove(pendingIntentKey)
+                    }
                     dialog.dismiss()
-                    Toast.makeText(requireContext(),"Alert deleted Successfully", Toast.LENGTH_SHORT).show()
                 }
                 .setNegativeButton("No") { dialog, id ->
                     dialog.dismiss()
@@ -338,6 +369,10 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
         }
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent)
 
+    }
+
+    private fun generatePendingIntentKey(alert: AlertData): String {
+        return "${alert.cityName}_${alert.date}_${alert.time}"
     }
 
 }
