@@ -38,15 +38,6 @@ class AddDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + requireContext().packageName)
-            )
-            startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION)
-        }
-
-
         binding.btnSave.setOnClickListener {
             if (selectedDate == null || selectedTime == null || radioButtonValue == -1) {
                 Toast.makeText(requireContext(), "Please fill in all fields.", Toast.LENGTH_SHORT)

@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -16,11 +17,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
@@ -28,11 +27,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.cloudy.utility.ApiState
 import com.example.cloudy.R
+import com.example.cloudy.alert.view.NOTFICATION_PERM
 import com.example.cloudy.databinding.FragmentHomeBinding
-import com.example.cloudy.databinding.FragmentSettingsBinding
-import com.example.cloudy.utility.Util
 import com.example.cloudy.db.LocalDataSourceImp
 import com.example.cloudy.home.viewmodel.HomeViewModel
 import com.example.cloudy.home.viewmodel.HomeViewModelFactory
@@ -41,17 +38,20 @@ import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
 import com.example.cloudy.settings.SettingsFragment
 import com.example.cloudy.settings.SettingsMapsActivity
+import com.example.cloudy.utility.ApiState
+import com.example.cloudy.utility.Util
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.math.log
 
 private const val TAG = "HomeFragment"
 const val REQUEST_LOCATION_CODE= 2005
@@ -73,6 +73,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var citySP: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+    var isEnable=false
 
 
 
@@ -111,11 +112,43 @@ class HomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if(Build.VERSION.SDK_INT >+ Build.VERSION_CODES.TIRAMISU){
+            requestPermissions( arrayOf(Manifest.permission.POST_NOTIFICATIONS), NOTFICATION_PERM)
+
+        }
+
+        binding.swipper.setOnRefreshListener {
+            if (checkPermissions()){
+                Log.i(TAG, "onViewCreated: 1")
+                if(isLocationEnabled()){
+                    getFreshLocation()
+                }else{
+                    enableLocationServices()
+                    getFreshLocation()
+                }
+            }else{
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_CODE
+                )
+            }
+            if(isEnable){
+                fetchWeatherData()
+            }
+            binding.swipper.isRefreshing=false
+
+        }
+
+
         if (checkPermissions()){
+            Log.i(TAG, "onViewCreated: 1")
             if(isLocationEnabled()){
                 getFreshLocation()
             }else{
                 enableLocationServices()
+                getFreshLocation()
             }
         }else{
             requestPermissions(
@@ -127,7 +160,7 @@ class HomeFragment : Fragment() {
 
 
         weatherFactory= HomeViewModelFactory(
-            WeatherRepositoryImp.getInstance(WeatherRemoteDataSourceImp.getInstance(),LocalDataSourceImp(requireContext())))
+            WeatherRepositoryImp.getInstance(WeatherRemoteDataSourceImp.getInstance(),LocalDataSourceImp(requireContext())),requireContext())
         viewModel= ViewModelProvider(this,weatherFactory).get(HomeViewModel::class.java)
 
 
@@ -192,6 +225,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun checkPermissions(): Boolean {
+        Log.i(TAG, "checkPermissions: checked")
         val fineLocationPermission = ContextCompat.checkSelfPermission(
             requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -207,7 +241,9 @@ class HomeFragment : Fragment() {
 
 
     private fun isLocationEnabled(): Boolean {
+        Log.i(TAG, "isLocationEnabled: location")
         val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        isEnable=true
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
@@ -238,6 +274,7 @@ class HomeFragment : Fragment() {
         Toast.makeText(requireContext(),"Please turn on location", Toast.LENGTH_SHORT).show()
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         startActivity(intent)
+        getFreshLocation()
     }
 
     private fun setUpLocationRequest() {
@@ -276,8 +313,13 @@ class HomeFragment : Fragment() {
     }
 
 
+    @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchWeatherData() {
+        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        val isConnected = networkInfo?.isConnectedOrConnecting == true
+
         if (SettingsFragment.windSP==1){
             windStr="m/s"
             if(SettingsFragment.locationSP==1 && SettingsFragment.languageSP && SettingsFragment.temperatureSP==1){
@@ -346,7 +388,6 @@ class HomeFragment : Fragment() {
 
         lifecycleScope.launch {
             viewModel.weatherList.collectLatest { weatherList ->
-                    Log.i(TAG, "fetchWeatherData: first launch")
                     when (weatherList) {
                         is ApiState.Loading -> {
                             binding.apply {
@@ -360,6 +401,7 @@ class HomeFragment : Fragment() {
                             binding.rvWeak.visibility = View.VISIBLE
                             binding.progress.visibility = View.GONE
                             val weatherData = weatherList.data
+
                             weatherData?.let {
                                 binding.tvWeather.text = weatherData.list[0].weather[0].description
                                 binding.tvDegree.text = "${weatherData.list[0].main.temp} $unitStr"
@@ -415,8 +457,77 @@ class HomeFragment : Fragment() {
 
                         }
                         else -> {
-                            binding.progress.visibility = View.GONE
-                            Toast.makeText(requireContext(), "Error", Toast.LENGTH_SHORT).show()
+                            if(!isConnected){
+                                val snackbar = Snackbar.make(binding.cl, "No Network Connection", Snackbar.LENGTH_SHORT)
+                                    .setAction("Dismiss") {
+                                    }.setActionTextColor(R.color.md_red_900)
+                                snackbar.show()
+                                val weatherData = viewModel.getStoredWeatherData()!!.firstOrNull()
+                                binding.rvDay.visibility = View.VISIBLE
+                                binding.rvWeak.visibility = View.VISIBLE
+                                binding.progress.visibility = View.GONE
+
+                                weatherData?.let {
+                                    binding.tvWeather.text =
+                                        weatherData.list[0].weather[0].description
+                                    binding.tvDegree.text =
+                                        "${weatherData.list[0].main.temp} $unitStr"
+                                    binding.tvHumidity.text =
+                                        "${weatherData.list[0].main.humidity}%"
+                                    binding.tvPressure.text =
+                                        "${weatherData.list[0].main.pressure} hPa"
+                                    binding.tvWindSpeed.text =
+                                        "${weatherData.list[0].wind.speed} $windStr"
+                                    binding.tvCurrentLocation.text = weatherData.city.name
+                                    binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
+
+                                    var icon = weatherData.list[0].weather[0].icon
+
+                                    if (icon == "01d" || icon == "01n") {
+                                        binding.ivPhoto.setImageResource(R.drawable.sunny)
+                                    }
+                                    if (icon == "02d" || icon == "02n" || icon == "03d" || icon == "03n" || icon == "04d" || icon == "04n") {
+                                        binding.ivPhoto.setImageResource(R.drawable.cloud)
+                                    }
+                                    if (icon == "09d" || icon == "09n" || icon == "10d" || icon == "10n") {
+                                        binding.ivPhoto.setImageResource(R.drawable.rain)
+                                    }
+                                    if (icon == "11d" || icon == "11n") {
+                                        binding.ivPhoto.setImageResource(R.drawable.thunder)
+                                    }
+                                    if (icon == "13d" || icon == "13n") {
+                                        binding.ivPhoto.setImageResource(R.drawable.snow)
+                                    }
+                                    if (icon == "50d" || icon == "50n") {
+                                        binding.ivPhoto.setImageResource(R.drawable.mist)
+                                    }
+
+                                    Log.i(TAG, "onCreate: ${weatherData.city.name}")
+
+                                    val currentDateString =
+                                        LocalDate.now()
+                                            .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+
+
+                                    var dayWeather =
+                                        weatherData.list.subList(0, minOf(6, weatherData.list.size))
+
+                                    dayList.addAll(dayWeather)
+                                    dayAdapter.submitList(dayList)
+
+                                    var weakWeather = weatherData.list
+                                    var hashSet = HashSet<String>()
+                                    weakWeather.forEach { weather ->
+                                        var apidDate = weather.dt_txt.split(" ")[0]
+                                        if (apidDate != currentDateString && hashSet.add(apidDate)) {
+                                            weakList.add(weather)
+                                        }
+                                    }
+                                    weakAdapter.submitList(weakList)
+                                }
+
+                            }
+
                         }
                     }
 

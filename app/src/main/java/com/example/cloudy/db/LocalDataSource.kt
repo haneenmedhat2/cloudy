@@ -14,4 +14,7 @@ interface LocalDataSource {
     suspend fun insertAlertData(alert:AlertData)
     fun getAlertData():Flow<List<AlertData>>
     suspend fun deleteAlertData(alert: AlertData)
+
+
 }
+

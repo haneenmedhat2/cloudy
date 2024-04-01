@@ -1,7 +1,10 @@
 package com.example.cloudy.favorite.view
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,19 +19,21 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cloudy.R
 import com.example.cloudy.city.view.CityWeatherActivity
+import com.example.cloudy.databinding.FragmentAlertBinding
+import com.example.cloudy.databinding.FragmentFavoriteBinding
 import com.example.cloudy.db.LocalDataSourceImp
 import com.example.cloudy.favorite.viewmodel.CityViewModel
 import com.example.cloudy.favorite.viewmodel.CityViewModelFactory
 import com.example.cloudy.model.MapCity
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
 
-    lateinit var add:ImageView
-    lateinit var text:TextView
+    private lateinit var binding: FragmentFavoriteBinding
     private lateinit var viewFactory: CityViewModelFactory
     private lateinit var viewModel: CityViewModel
     private lateinit var recyclerView: RecyclerView
@@ -39,13 +44,13 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favorite, container, false)
+        binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        add = view.findViewById(R.id.btnAdd)
-        text = view.findViewById(R.id.tv)
         recyclerView = view.findViewById(R.id.rv_city)
         cityAdapter = CityAdapter(this)
         cityLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -63,15 +68,29 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
 
         viewModel = ViewModelProvider(this, viewFactory).get(CityViewModel::class.java)
 
-        add.setOnClickListener {
-            val intent = Intent(requireContext(), MapsActivity::class.java)
-            startActivity(intent)
+
+        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        val isConnected = networkInfo?.isConnectedOrConnecting == true
+
+        binding.btnAdd.setOnClickListener {
+            if(!isConnected){
+                val snackbar =
+                    Snackbar.make(binding.cl, "No Network Connection", Snackbar.LENGTH_SHORT)
+                        .setAction("Dismiss") {
+                        }.setActionTextColor(R.color.md_red_900)
+                snackbar.show()
+            }else{
+                val intent = Intent(requireContext(), MapsActivity::class.java)
+                startActivity(intent)
+            }
+
         }
 
         lifecycleScope.launch {
             viewModel.cityList.collectLatest { city ->
                 if (city!=null){
-                    text.visibility=View.GONE
+                    binding.tv.visibility=View.GONE
                 }
                 cityAdapter.submitList(city)
             }

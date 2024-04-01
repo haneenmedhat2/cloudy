@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="addCity_addToCitiyes_theSameCities()">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>
@@ -15,8 +18,20 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-31T11:56:31.218347100Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-01T13:11:57.352042200Z" />
         </State>
+      </entry>
+      <entry key="deleteCity_removeTwoCities()">
+        <State />
+      </entry>
+      <entry key="getAllCities_addOneCity_retrieveList()">
+        <State />
+      </entry>
+      <entry key="getAllCities_addToCitiyes_theSameCities()">
+        <State />
+      </entry>
+      <entry key="insertCity()">
+        <State />
       </entry>
     </value>
   </component>

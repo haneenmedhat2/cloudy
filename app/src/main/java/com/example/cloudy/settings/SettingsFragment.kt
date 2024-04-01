@@ -1,9 +1,11 @@
 package com.example.cloudy.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Configuration
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.LocaleList
 import android.view.LayoutInflater
@@ -14,6 +16,7 @@ import com.example.cloudy.HomeActivity
 import com.example.cloudy.R
 import com.example.cloudy.databinding.FragmentSettingsBinding
 import com.example.cloudy.utility.LanguageConfig
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import java.util.Locale
@@ -49,10 +52,16 @@ class SettingsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-         locationSP = sharedPreferences.getInt("selectedRadioButtonId", 0)
+        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        val isConnected = networkInfo?.isConnectedOrConnecting == true
+
+
+        locationSP = sharedPreferences.getInt("selectedRadioButtonId", 0)
         if (locationSP == 1) {
             binding.buttonMap.isChecked = true
         } else if (locationSP == 0) {
@@ -73,8 +82,18 @@ class SettingsFragment : Fragment() {
         }
 
         binding.buttonMap.setOnClickListener {
-            val intent=Intent(requireContext(),SettingsMapsActivity::class.java)
-            startActivity(intent)
+            if(!isConnected) {
+                val snackbar =
+                    Snackbar.make(binding.cl, "No Network Connection", Snackbar.LENGTH_SHORT)
+                        .setAction("Dismiss") {
+                        }.setActionTextColor(R.color.md_red_900)
+                snackbar.show()
+            }
+                else{
+                    val intent=Intent(requireContext(),SettingsMapsActivity::class.java)
+                    startActivity(intent)
+                }
+
         }
 
          languageSP = sharedPreferences.getBoolean("isEnglish", true)
@@ -108,6 +127,17 @@ class SettingsFragment : Fragment() {
             // Restart the activity to reflect the changes
             requireActivity().recreate()
         }
+
+        binding.buttonEng.setOnClickListener {
+            setEnglishLocale()
+            editor.putBoolean("isEnglish", true)
+            editor.putBoolean("isArabic", false)
+            editor.apply()
+
+            // Restart the activity to reflect the changes
+            requireActivity().recreate()
+        }
+
 
 
         temperatureSP = sharedPreferences.getInt("selectedTemperature", 1)
@@ -176,6 +206,17 @@ class SettingsFragment : Fragment() {
         editor.putBoolean("isArabic", true)
         editor.apply()
 
+       (activity as? HomeActivity)?.restartActivity()
+    }
+
+    private fun setEnglishLocale() {
+        changeAppLocale(requireContext(), Locale("en"))
+        listener.onLanguageChanged(false)
+        // Save the language preference
+        editor.putBoolean("isEnglish", true)
+        editor.putBoolean("isArabic", false)
+        editor.apply()
+
         (activity as? HomeActivity)?.restartActivity()
     }
 
@@ -190,7 +231,7 @@ class SettingsFragment : Fragment() {
         if (context is OnLanguageChangeListener) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement OnLanguageChangeListener")
+            throw RuntimeException("$context must implement OnLanguageChangeListener")
         }
     }
 

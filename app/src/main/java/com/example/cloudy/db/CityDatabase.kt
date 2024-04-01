@@ -9,10 +9,12 @@ import com.example.cloudy.model.Alert
 import com.example.cloudy.model.AlertData
 import com.example.cloudy.model.MapCity
 
+
 @Database (entities = arrayOf( MapCity::class,AlertData::class), version = 4)
 abstract class CityDatabase:RoomDatabase() {
     abstract fun getAllCities(): CityDao
     abstract fun getAlertData():AlertDataDao
+
     companion object{
         @Volatile
         private var INSTANCE: CityDatabase?=null

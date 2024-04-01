@@ -5,16 +5,23 @@ import com.example.cloudy.model.Alert
 import com.example.cloudy.model.AlertData
 import com.example.cloudy.model.MapCity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+
 
 class LocalDataSourceImp(context: Context) :LocalDataSource{
 
-   private val dao:CityDao
-    private val alertDataDao:AlertDataDao
-    init {
-        val db: CityDatabase = CityDatabase.getInstance(context)
-        dao= db.getAllCities()
-        alertDataDao=db.getAlertData()
+    private val database by lazy {
+        CityDatabase.getInstance(context)
     }
+
+    private val dao: CityDao by lazy {
+        database.getAllCities()
+    }
+
+    private val alertDataDao: AlertDataDao by lazy {
+        database.getAlertData()
+    }
+
 
     //City
     override suspend fun insertCity(city: MapCity){
@@ -41,5 +48,8 @@ class LocalDataSourceImp(context: Context) :LocalDataSource{
     override suspend fun deleteAlertData(alert: AlertData) {
         alertDataDao.deleteAlertData(alert)
     }
+
+
+
 
 }

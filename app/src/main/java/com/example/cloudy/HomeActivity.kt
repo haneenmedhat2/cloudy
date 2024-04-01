@@ -25,20 +25,6 @@ class HomeActivity : AppCompatActivity(),NavigationView.OnNavigationItemSelected
     lateinit  var drawerLayout: DrawerLayout
     lateinit var navigationView: NavigationView
 
-
-   /* override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(newBase)
-        newBase ?: return // Exit early if newBase is null
-
-        val language = SettingsFragment.languageSP
-        val updatedContext = if (language) {
-            LanguageConfig.changeLanguage(newBase, "en")
-        } else {
-            LanguageConfig.changeLanguage(newBase, "ar")
-        }
-        recreate()
-    }*/
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)

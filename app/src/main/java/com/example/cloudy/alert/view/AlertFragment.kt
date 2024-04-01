@@ -3,6 +3,7 @@ package com.example.cloudy.alert.view
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -10,8 +11,11 @@ import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -40,11 +44,12 @@ import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
 import com.example.cloudy.utility.ApiState
 import com.example.cloudy.utility.Util
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Calendar
-
-
+const val ALARM_PERM=100
+val REQUEST_OVERLAY_PERMISSION = 123
 const val NOTFICATION_PERM=1023
 private const val TAG = "AlertFragment"
 class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
@@ -75,8 +80,14 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
         return binding.root
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        checkNotificationPermission()
+        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val networkInfo = connectivityManager.activeNetworkInfo
+        val isConnected = networkInfo?.isConnectedOrConnecting == true
 
         alertAdapter = AlertAdapter(this)
         alertLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -84,6 +95,8 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
             adapter = alertAdapter
             layoutManager = alertLayoutManager
         }
+        alertAdapter.notifyDataSetChanged()
+
 
         viewFactory2 = CityViewModelFactory(
             WeatherRepositoryImp.getInstance
@@ -153,7 +166,7 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
                                             scheduleNotification(timeDifference, i)
                                         }
                                         if (alertDatabase.alertType==2){
-                                            setAlarmWithSound(requireContext(),timeDifference,alertDatabase.cityName)
+                                            setAlarmWithSound(requireContext(),timeDifference)
                                         }
 
                                     }
@@ -182,8 +195,23 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
             }
         }
         binding.btnSecFloat.setOnClickListener {
+            if(!isConnected) {
+                val snackbar =
+                    Snackbar.make(binding.cl, "No Network Connection", Snackbar.LENGTH_SHORT)
+                        .setAction("Dismiss") {
+                        }.setActionTextColor(R.color.md_red_900)
+                snackbar.show()
+            }
+            else{
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
+                    val intent = Intent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + requireContext().packageName)
+                    )
+                    startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION)
+                }
 
-            val dialog = AddDialogFragment()
+                val dialog = AddDialogFragment()
             dialog.show(childFragmentManager, "AddDialogFragment")
             dialog.setOnSaveClickListener(object : AddDialogFragment.OnSaveClickListener {
                 override fun onSaveClick(
@@ -234,10 +262,22 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
 
         }
     }
+    }
 
     override fun onDeleteClick(alert: AlertData) {
         lifecycleScope.launch {
-            viewModel.deleteAlertData(alert)
+            val builder = AlertDialog.Builder(context)
+            builder.setMessage("Are you sure you want to delete this?")
+                .setPositiveButton("Yes") { dialog, id ->
+                    viewModel.deleteAlertData(alert)
+                    dialog.dismiss()
+                    Toast.makeText(requireContext(),"Alert deleted Successfully", Toast.LENGTH_SHORT).show()
+                }
+                .setNegativeButton("No") { dialog, id ->
+                    dialog.dismiss()
+                }
+            val dialog = builder.create()
+            dialog.show()
         }
 
     }
@@ -278,31 +318,22 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
     }
 
     fun checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(),
-                    Manifest.permission.SET_ALARM
-                ) != PackageManager.PERMISSION_GRANTED
-            ) {
-                // Request the SET_ALARM permission
-                ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    arrayOf(Manifest.permission.SET_ALARM),
-                    NOTFICATION_PERM
-                )
-                return
-            }
+
+        if(Build.VERSION.SDK_INT >+ Build.VERSION_CODES.TIRAMISU){
+            requestPermissions( arrayOf(Manifest.permission.POST_NOTIFICATIONS), NOTFICATION_PERM)
         }
 
-    }
+        if(Build.VERSION.SDK_INT >+ Build.VERSION_CODES.TIRAMISU){
+            requestPermissions( arrayOf(Manifest.permission.SCHEDULE_EXACT_ALARM), ALARM_PERM)
+        }
+        }
+
 
     @SuppressLint("ScheduleExactAlarm")
-    fun setAlarmWithSound(context: Context, alarmTime: Long,cityName:String) {
+    fun setAlarmWithSound(context: Context, alarmTime: Long) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val alarmIntent = Intent(context, SoundAlert::class.java).let { intent ->
             intent.putExtra("alertDescription",alertDescription)
-            intent.putExtra("cityName",cityName)
-
             PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
         }
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, alarmIntent)
