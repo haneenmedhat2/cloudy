@@ -7,7 +7,29 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.cloudy.HomeFragment"
+        android:name="com.example.cloudy.home.view.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+
+
+    </fragment>
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.example.cloudy.favorite.view.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" >
+
+    </fragment>
+    <fragment
+        android:id="@+id/alertFragment"
+        android:name="com.example.cloudy.alert.view.AlertFragment"
+        android:label="fragment_alert"
+        tools:layout="@layout/fragment_alert" >
+
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.cloudy.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

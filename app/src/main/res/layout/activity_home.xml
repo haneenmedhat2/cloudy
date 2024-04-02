@@ -4,31 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/sky"
     android:id="@+id/drawer_layout"
-    tools:context=".home.view.HomeActivity">
+    tools:context=".HomeActivity">
+
+    <fragment
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
+
 
  <com.google.android.material.navigation.NavigationView
      android:id="@+id/navigator_layout"
-     app:headerLayout="@layout/nav_header"
+     app:headerLayout="@layout/header"
      android:layout_gravity="start"
      android:layout_height="match_parent"
      android:layout_width="match_parent"
      app:menu="@menu/btm_mnu"
      />
-
- <fragment
-     android:id="@+id/nav_host_fragment"
-     android:name="androidx.navigation.fragment.NavHostFragment"
-     android:layout_width="0dp"
-     android:layout_height="0dp"
-     app:layout_constraintLeft_toLeftOf="parent"
-     app:layout_constraintRight_toRightOf="parent"
-     app:layout_constraintTop_toTopOf="parent"
-     app:layout_constraintBottom_toBottomOf="parent"
-     app:defaultNavHost="true"
-     app:navGraph="@navigation/nav_graph" />
-
     </androidx.drawerlayout.widget.DrawerLayout>
 
 

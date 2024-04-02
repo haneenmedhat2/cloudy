@@ -36,13 +36,28 @@ class DayWeatherAdapter() : ListAdapter<WeatherItem, WeatherViewHolder>
         val time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"))
         val amOrPm = if (time.hour < 12) "AM" else "PM"
         holder.time.text="$timeString$amOrPm"
-        holder.degree.text= "${weather.main.temp} °C"
+        holder.degree.text= "${weather.main.temp} ${HomeFragment.unitStr}"
 
-        val iconUrl = "https://openweathermap.org/img/wn/${weather.weather[0].icon}.png"
-        Glide.with(holder.itemView.context)
-            .load(iconUrl)
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(holder.image)
+        var icon=weather.weather[0].icon
+
+        if (icon=="01d"|| icon=="01n" ){
+            holder.image.setImageResource(R.drawable.sunny)
+        }
+        if (icon=="02d"|| icon=="02n"|| icon=="03d"|| icon=="03n"|| icon=="04d"|| icon=="04n" ){
+            holder.image.setImageResource(R.drawable.cloud)
+        }
+        if (icon=="09d"|| icon=="09n"|| icon=="10d"|| icon=="10n" ){
+            holder.image.setImageResource(R.drawable.rain)
+        }
+        if (icon=="11d"|| icon=="11n" ){
+            holder.image.setImageResource(R.drawable.thunder)
+        }
+        if (icon=="13d"|| icon=="13n" ){
+            holder.image.setImageResource(R.drawable.snow)
+        }
+        if (icon=="50d"|| icon=="50n" ){
+            holder.image.setImageResource(R.drawable.mist)
+        }
 
     }
 

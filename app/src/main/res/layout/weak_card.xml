@@ -6,15 +6,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp"
     android:elevation="20dp"
-    android:backgroundTint="#00FFFFFF"
-    app:cardCornerRadius="4dp">
+    android:backgroundTint="@color/md_blue_100"
+    app:cardCornerRadius="15dp">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:backgroundTint="#00FFFFFF">
+        android:layout_gravity="center">
 
 
         <TextView
@@ -23,41 +22,33 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:padding="8dp"
-            android:shadowColor="#574B53"
-            android:shadowDx="15"
-            android:shadowDy="2"
-            android:shadowRadius="8"
             android:text="Tomorrow"
             android:textColor="#191717"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.508" />
+            android:layout_marginTop="25dp"/>
 
         <ImageView
             android:id="@+id/ivPhoto"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginStart="56dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_day"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginStart="170dp"
+            android:layout_marginTop="25dp" />
 
         <TextView
             android:id="@+id/tv_degree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="monospace"
-            android:text="10C"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="60dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="45dp"
+            android:fontFamily="@font/abhaya_libre"
+            android:text="55.55 `C"
+            android:textColor="@color/black"
             android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ivPhoto"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textStyle="bold" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>

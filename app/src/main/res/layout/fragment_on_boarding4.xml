@@ -31,7 +31,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
             android:text="@string/title_onboarding_1"
-            android:textSize="25sp"
+            android:textSize="30sp"
             android:gravity="center"
             android:textStyle="bold"
             android:textColor="@color/black"/>
@@ -49,6 +49,6 @@
         android:gravity="center"
         android:text="@string/description_onboarding_1"
         android:textColor="@color/md_grey_800"
-        android:textSize="16sp" />
+        android:textSize="20sp" />
 
     </RelativeLayout>

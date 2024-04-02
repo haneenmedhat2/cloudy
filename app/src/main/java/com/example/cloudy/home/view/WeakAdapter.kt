@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.cloudy.R
 import com.example.cloudy.model.WeatherItem
+import com.example.cloudy.settings.SettingsFragment
 import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -51,15 +52,46 @@ class WeakAdapter() : ListAdapter<WeatherItem,WeakViewHolder >
             Calendar.SATURDAY -> "Saturday"
             else -> "Unknown"
         }
+          if(!SettingsFragment.languageSP){
+              if (result=="Sunday")
+                  holder.day.text="الأحد"
+              if (result=="Monday")
+                  holder.day.text="الاثنين"
+              if (result=="Tuesday")
+                  holder.day.text="الثلاثاء"
+              if (result=="Wednesday")
+                  holder.day.text="الأربعاء"
+              if (result=="Thursday")
+                  holder.day.text="الخميس"
+              if (result=="Friday")
+                  holder.day.text="الجمعة"
+              if (result=="Saturday")
+                  holder.day.text="السبت"
+          }else{
+              holder.day.text=result
+          }
+        holder.degree.text= "${weather.main.temp} ${HomeFragment.unitStr}"
 
-        holder.day.text=result
-        holder.degree.text= "${weather.main.temp} °C"
+        var icon=weather.weather[0].icon
 
-        val iconUrl = "https://openweathermap.org/img/wn/${weather.weather[0].icon}.png"
-        Glide.with(holder.itemView.context)
-            .load(iconUrl)
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(holder.image)
+        if (icon=="01d"|| icon=="01n" ){
+            holder.image.setImageResource(R.drawable.sunny)
+        }
+        if (icon=="02d"|| icon=="02n"|| icon=="03d"|| icon=="03n"|| icon=="04d"|| icon=="04n" ){
+            holder.image.setImageResource(R.drawable.cloud)
+        }
+        if (icon=="09d"|| icon=="09n"|| icon=="10d"|| icon=="10n" ){
+            holder.image.setImageResource(R.drawable.rain)
+        }
+        if (icon=="11d"|| icon=="11n" ){
+            holder.image.setImageResource(R.drawable.thunder)
+        }
+        if (icon=="13d"|| icon=="13n" ){
+            holder.image.setImageResource(R.drawable.snow)
+        }
+        if (icon=="50d"|| icon=="50n" ){
+            holder.image.setImageResource(R.drawable.mist)
+        }
 
     }
 

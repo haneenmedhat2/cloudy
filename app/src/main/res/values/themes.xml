@@ -1,15 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Cloudy" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+       <item name="colorPrimary">#61A4AA</item>
     </style>
 
-    <style name="Theme.Cloudy" parent="Base.Theme.Cloudy" />
-    <style name="Theme.Cloudy.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="Theme.Cloudy" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/white</item>
+
     </style>
+
     <style name="Theme.Cloudy.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.Cloudy.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
