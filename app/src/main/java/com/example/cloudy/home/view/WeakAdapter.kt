@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.cloudy.R
 import com.example.cloudy.model.WeatherItem
+import com.example.cloudy.settings.SettingsFragment
 import java.text.SimpleDateFormat
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -42,17 +43,33 @@ class WeakAdapter() : ListAdapter<WeatherItem,WeakViewHolder >
         calendar.time = date ?: Date()
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
          val result= when (dayOfWeek) {
-            Calendar.SUNDAY -> R.string.Sunday
-            Calendar.MONDAY -> R.string.Monday
-            Calendar.TUESDAY -> R.string.Tuesday
-            Calendar.WEDNESDAY ->R.string.Wednesday
-            Calendar.THURSDAY -> R.string.Thursday
-            Calendar.FRIDAY -> R.string.Friday
-            Calendar.SATURDAY ->R.string.Saturday
+            Calendar.SUNDAY -> "Sunday"
+            Calendar.MONDAY -> "Monday"
+            Calendar.TUESDAY -> "Tuesday"
+            Calendar.WEDNESDAY -> "Wednesday"
+            Calendar.THURSDAY -> "Thursday"
+            Calendar.FRIDAY -> "Friday"
+            Calendar.SATURDAY -> "Saturday"
             else -> "Unknown"
         }
-
-        holder.day.text=result
+          if(!SettingsFragment.languageSP){
+              if (result=="Sunday")
+                  holder.day.text="الأحد"
+              if (result=="Monday")
+                  holder.day.text="الاثنين"
+              if (result=="Tuesday")
+                  holder.day.text="الثلاثاء"
+              if (result=="Wednesday")
+                  holder.day.text="الأربعاء"
+              if (result=="Thursday")
+                  holder.day.text="الخميس"
+              if (result=="Friday")
+                  holder.day.text="الجمعة"
+              if (result=="Saturday")
+                  holder.day.text="السبت"
+          }else{
+              holder.day.text=result
+          }
         holder.degree.text= "${weather.main.temp} ${HomeFragment.unitStr}"
 
         var icon=weather.weather[0].icon

@@ -67,4 +67,6 @@
     <string name="Thursday">الخميس</string>
     <string name="Friday">الجمعة</string>
     <string name="Saturday">السبت</string>
+    <string name="no_places_are_added">لم يتم أضافة أماكن حتي الأن</string>
+
 </resources>

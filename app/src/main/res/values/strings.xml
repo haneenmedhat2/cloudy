@@ -65,4 +65,5 @@
     <string name="Thursday">Thursday</string>
     <string name="Friday">Friday</string>
     <string name="Saturday">Saturday</string>
+    <string name="no_places_are_added">No places are added</string>
 </resources>

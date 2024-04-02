@@ -68,6 +68,8 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
 
         viewModel = ViewModelProvider(this, viewFactory).get(CityViewModel::class.java)
 
+        binding.ivNot.visibility=View.VISIBLE
+        binding.tv.visibility=View.VISIBLE
 
         val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo
@@ -90,6 +92,7 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
         lifecycleScope.launch {
             viewModel.cityList.collectLatest { city ->
                 if (city!=null){
+                    binding.ivNot.visibility=View.GONE
                     binding.tv.visibility=View.GONE
                 }
                 cityAdapter.submitList(city)
