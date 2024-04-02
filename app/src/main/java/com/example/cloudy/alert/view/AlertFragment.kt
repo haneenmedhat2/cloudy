@@ -43,6 +43,7 @@ import com.example.cloudy.model.AlertData
 import com.example.cloudy.model.MapCity
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
+import com.example.cloudy.settings.SettingsFragment
 import com.example.cloudy.utility.ApiState
 import com.example.cloudy.utility.Util
 import com.google.android.material.snackbar.Snackbar
@@ -84,6 +85,16 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(SettingsFragment.languageSP){
+            activity?.title = "Alert"
+        }else{
+            activity?.title = "صفحة المنبه"
+
+        }
+
+    }
     @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -203,17 +214,7 @@ class AlertFragment : Fragment(),AlertAdapter.OnClickListener {
                 }
             }
         }
-        var isVisible = false
-        binding.btnSecFloat.hide()
-        binding.btnAdd.setOnClickListener {
-            if (!isVisible) {
-                binding.btnSecFloat.show()
-                isVisible = true
-            } else {
-                binding.btnSecFloat.hide()
-                isVisible = false
-            }
-        }
+
         binding.btnSecFloat.setOnClickListener {
             if(!isConnected) {
                 val snackbar =

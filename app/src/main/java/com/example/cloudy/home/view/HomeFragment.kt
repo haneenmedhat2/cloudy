@@ -98,6 +98,16 @@ class HomeFragment : Fragment() {
         editor = citySP.edit()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(SettingsFragment.languageSP){
+            activity?.title = "Home"
+        }else{
+            activity?.title = "الصفحة الرئيسية"
+
+        }
+
+    }
     override  fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?

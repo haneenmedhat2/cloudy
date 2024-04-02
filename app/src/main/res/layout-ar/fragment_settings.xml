@@ -10,64 +10,67 @@
 
 
 
-  <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:elevation="20dp"
-        app:cardCornerRadius="15dp"
-       android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="50dp">
-
-      <ImageView
-          android:layout_width="30dp"
-          android:layout_height="30dp"
-          android:layout_marginTop="20dp"
-          android:layout_marginStart="12dp"
-          android:src="@drawable/location"/>
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="Location"
-          android:textSize="20dp"
-          android:textColor="@color/black"
-          android:layout_marginTop="23dp"
-          android:layout_marginStart="60dp" />
-
-    <info.hoang8f.android.segmented.SegmentedGroup
-        xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/segmented1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
-        android:layout_marginStart="240dp"
-        segmentedgroup:sc_tint_color="@color/md_cyan_900"
-        android:orientation="horizontal"
-
-        segmentedgroup:sc_border_width="2dp"
-        segmentedgroup:sc_corner_radius="10dp">
-
-        <RadioButton
-            android:id="@+id/button_gps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="GPS"
-            style="@style/RadioButton" />
-
-        <RadioButton
-            android:id="@+id/button_map"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Map"
-            style="@style/RadioButton" />
-    </info.hoang8f.android.segmented.SegmentedGroup>
-
-  </androidx.cardview.widget.CardView>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:elevation="20dp"
         app:cardCornerRadius="15dp"
+        android:layoutDirection="ltr"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="50dp">
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="12dp"
+            android:src="@drawable/location"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:layout_marginTop="23dp"
+            android:layout_marginStart="60dp" />
+
+        <info.hoang8f.android.segmented.SegmentedGroup
+            android:id="@+id/segmented1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:layout_marginStart="240dp"
+            app:sc_tint_color="@color/md_cyan_900"
+            android:orientation="horizontal"
+
+            app:sc_border_width="2dp"
+            app:sc_corner_radius="10dp">
+
+            <RadioButton
+                android:id="@+id/button_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Map"
+                style="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/button_gps"
+                style="@style/RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GPS" />
+
+
+        </info.hoang8f.android.segmented.SegmentedGroup>
+
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:elevation="20dp"
+        app:cardCornerRadius="15dp"
+        android:layoutDirection="ltr"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginTop="150dp">
@@ -122,6 +125,7 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:elevation="20dp"
+        android:layoutDirection="ltr"
         app:cardCornerRadius="15dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
@@ -181,6 +185,7 @@
         android:elevation="20dp"
         app:cardCornerRadius="15dp"
         android:layout_marginStart="5dp"
+        android:layoutDirection="ltr"
         android:layout_marginEnd="5dp"
         android:layout_marginTop="350dp">
 

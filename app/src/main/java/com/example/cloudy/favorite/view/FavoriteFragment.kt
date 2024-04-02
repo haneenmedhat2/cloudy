@@ -27,6 +27,7 @@ import com.example.cloudy.favorite.viewmodel.CityViewModelFactory
 import com.example.cloudy.model.MapCity
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
+import com.example.cloudy.settings.SettingsFragment
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -48,6 +49,16 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(SettingsFragment.languageSP){
+            activity?.title = "Favorites"
+        }else{
+            activity?.title = "صفحة المفضلة"
+
+        }
+
+    }
     @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

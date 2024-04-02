@@ -66,6 +66,16 @@ class CityWeatherActivity : AppCompatActivity() {
         var windStr = ""
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(SettingsFragment.languageSP) {
+        this.title = "City Weather"
+        }else{
+            this.title = "طقس المدينة "
+
+        }
+
+    }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -48,6 +48,16 @@ class SettingsMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         var cityList=_cityList.asStateFlow()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(SettingsFragment.languageSP) {
+            this.title = "City Weather"
+        }else{
+            this.title = "طقس المدينة "
+
+        }
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

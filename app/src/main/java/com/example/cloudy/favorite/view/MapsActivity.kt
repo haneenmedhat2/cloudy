@@ -19,6 +19,7 @@ import com.example.cloudy.favorite.viewmodel.CityViewModelFactory
 import com.example.cloudy.model.MapCity
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
+import com.example.cloudy.settings.SettingsFragment
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -44,6 +45,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var viewFactory:CityViewModelFactory
     private lateinit var viewModel: CityViewModel
+
+    override fun onResume() {
+        super.onResume()
+        if(SettingsFragment.languageSP) {
+            this.title = "Map"
+        }else{
+            this.title = " الخريطة "
+
+        }
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMapsBinding.inflate(layoutInflater)

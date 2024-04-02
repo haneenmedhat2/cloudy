@@ -43,6 +43,16 @@ class SettingsFragment : Fragment() {
         editor = sharedPreferences.edit()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if(languageSP){
+            activity?.title = "Settings"
+        }else{
+            activity?.title = "صفحة الأعدادات"
+
+        }
+
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

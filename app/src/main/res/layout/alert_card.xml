@@ -8,7 +8,7 @@
     android:elevation="20dp"
     android:backgroundTint="@color/white"
     android:id="@+id/favcard"
-    app:cardCornerRadius="15dp">
+    app:cardCornerRadius="17dp">
 
 
     <RelativeLayout
@@ -21,41 +21,38 @@
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="245dp"
             android:padding="8dp"
             android:text="10:00"
             android:textColor="#191717"
             android:textSize="20sp"
-            android:textStyle="bold"
             android:layout_marginTop="25dp"/>
 
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="120dp"
+            android:layout_marginStart="125dp"
             android:padding="8dp"
             android:text="3-1-2002"
             android:textColor="#191717"
             android:textSize="20sp"
-            android:textStyle="bold"
             android:layout_marginTop="25dp"/>
 
         <TextView
             android:id="@+id/tv_city"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="240dp"
+            android:layout_marginStart="30dp"
             android:padding="8dp"
             android:text="Russia"
             android:textColor="#191717"
             android:textSize="20sp"
-            android:textStyle="bold"
             android:layout_marginTop="25dp"/>
 
         <ImageView
             android:id="@+id/ivPhoto"
-            android:src="@drawable/delete"
+            android:src="@drawable/menuv"
             android:layout_width="30dp"
             android:layout_height="40dp"
             android:layout_marginEnd="20dp"

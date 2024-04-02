@@ -68,5 +68,15 @@
     <string name="Friday">الجمعة</string>
     <string name="Saturday">السبت</string>
     <string name="no_places_are_added">لم يتم أضافة أماكن حتي الأن</string>
+    <string name="no_alerts_yet">لم يتم أضافة العناصر حتي الأن</string>
+    <string name="notification">الأشعارات</string>
+    <string name="alarm">منبه</string>
+    <string name="save">حسنا</string>
+    <string name="home">الصفحة الرئيسية</string>
+    <string name="alert">صفحة المنبه</string>
+    <string name="settings">صفحة الأعدادات</string>
+    <string name="favorite">صفحة المفضلة</string>
+
+
 
 </resources>
