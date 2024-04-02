@@ -158,7 +158,14 @@ class HomeFragment : Fragment() {
             )
         }
 
-
+        binding.apply {
+        tvCurrentLocation.visibility=View.GONE
+        tvDate.visibility=View.GONE
+        ivPhoto.visibility=View.GONE
+        tvDegree.visibility=View.GONE
+        tvWeather.visibility=View.GONE
+        cardView.visibility=View.GONE
+         }
         weatherFactory= HomeViewModelFactory(
             WeatherRepositoryImp.getInstance(WeatherRemoteDataSourceImp.getInstance(),LocalDataSourceImp(requireContext())),requireContext())
         viewModel= ViewModelProvider(this,weatherFactory).get(HomeViewModel::class.java)
@@ -316,8 +323,10 @@ class HomeFragment : Fragment() {
     @SuppressLint("ResourceAsColor")
     @RequiresApi(Build.VERSION_CODES.O)
     private fun fetchWeatherData() {
-        val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val networkInfo = connectivityManager.activeNetworkInfo
+        val connectivityManager = context?.let {
+            it.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        }
+        val networkInfo = connectivityManager?.activeNetworkInfo
         val isConnected = networkInfo?.isConnectedOrConnecting == true
 
         if (SettingsFragment.windSP==1){
@@ -393,13 +402,28 @@ class HomeFragment : Fragment() {
                             binding.apply {
                                 rvDay.visibility = View.GONE
                                 rvWeak.visibility = View.GONE
+                                tvCurrentLocation.visibility=View.GONE
+                                tvDate.visibility=View.GONE
+                                ivPhoto.visibility=View.GONE
+                                tvDegree.visibility=View.GONE
+                                tvWeather.visibility=View.GONE
+                                cardView.visibility=View.GONE
                                 progress.visibility = View.VISIBLE
+
                             }
                         }
                         is ApiState.Success -> {
-                            binding.rvDay.visibility = View.VISIBLE
-                            binding.rvWeak.visibility = View.VISIBLE
-                            binding.progress.visibility = View.GONE
+                            binding.apply {
+                                rvDay.visibility = View.VISIBLE
+                                rvWeak.visibility = View.VISIBLE
+                                tvCurrentLocation.visibility = View.VISIBLE
+                                tvDate.visibility = View.VISIBLE
+                                ivPhoto.visibility = View.VISIBLE
+                                tvDegree.visibility = View.VISIBLE
+                                tvWeather.visibility = View.VISIBLE
+                                cardView.visibility = View.VISIBLE
+                                binding.progress.visibility = View.GONE
+                            }
                             val weatherData = weatherList.data
 
                             weatherData?.let {

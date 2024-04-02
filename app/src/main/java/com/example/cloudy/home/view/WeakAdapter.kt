@@ -42,13 +42,13 @@ class WeakAdapter() : ListAdapter<WeatherItem,WeakViewHolder >
         calendar.time = date ?: Date()
         val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
          val result= when (dayOfWeek) {
-            Calendar.SUNDAY -> "Sunday"
-            Calendar.MONDAY -> "Monday"
-            Calendar.TUESDAY -> "Tuesday"
-            Calendar.WEDNESDAY -> "Wednesday"
-            Calendar.THURSDAY -> "Thursday"
-            Calendar.FRIDAY -> "Friday"
-            Calendar.SATURDAY -> "Saturday"
+            Calendar.SUNDAY -> R.string.Sunday
+            Calendar.MONDAY -> R.string.Monday
+            Calendar.TUESDAY -> R.string.Tuesday
+            Calendar.WEDNESDAY ->R.string.Wednesday
+            Calendar.THURSDAY -> R.string.Thursday
+            Calendar.FRIDAY -> R.string.Friday
+            Calendar.SATURDAY ->R.string.Saturday
             else -> "Unknown"
         }
 

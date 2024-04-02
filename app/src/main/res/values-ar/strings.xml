@@ -55,4 +55,16 @@
     <string name="title_activity_maps_alert">نشاط تنبيهات الخرائط</string>
     <string name="set_alarm">تعيين التنبيه</string>
     <string name="title_activity_settings_maps">نشاط إعدادات الخرائط</string>
+
+    <string name="humidity">الرطوبة</string>
+    <string name="cloud">السحاب</string>
+    <string name="pressure">الضغط</string>
+    <string name="wind">الرياح</string>
+    <string name="Sunday">الأحد</string>
+    <string name="Monday">الاثنين</string>
+    <string name="Tuesday">الثلاثاء</string>
+    <string name="Wednesday">الأربعاء</string>
+    <string name="Thursday">الخميس</string>
+    <string name="Friday">الجمعة</string>
+    <string name="Saturday">السبت</string>
 </resources>

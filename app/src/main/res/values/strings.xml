@@ -54,4 +54,15 @@
     <string name="title_activity_maps_alert">MapsAlertActivity</string>
     <string name="set_alarm">Set Alarm</string>
     <string name="title_activity_settings_maps">SettingsMapsActivity</string>
+    <string name="humidity">Humidity</string>
+    <string name="cloud">Cloud</string>
+    <string name="pressure">Pressure</string>
+    <string name="wind">Wind</string>
+    <string name="Sunday">Sunday</string>
+    <string name="Monday">Monday</string>
+    <string name="Tuesday">Tuesday</string>
+    <string name="Wednesday">Wednesday</string>
+    <string name="Thursday">Thursday</string>
+    <string name="Friday">Friday</string>
+    <string name="Saturday">Saturday</string>
 </resources>
