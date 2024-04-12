@@ -19,7 +19,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.fragment.app.Fragment
@@ -46,7 +45,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -96,6 +94,8 @@ class HomeFragment : Fragment() {
         super.onCreate(savedInstanceState)
         citySP = requireContext().getSharedPreferences("radio_button_prefs", Context.MODE_PRIVATE)
         editor = citySP.edit()
+
+
     }
 
     override fun onResume() {
@@ -113,7 +113,7 @@ class HomeFragment : Fragment() {
     savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-    citySP = requireContext().getSharedPreferences("city_data", Context.MODE_PRIVATE)
+        citySP = requireContext().getSharedPreferences("city_data", Context.MODE_PRIVATE)
     editor = citySP.edit()
     binding = FragmentHomeBinding.inflate(inflater, container, false)
     return binding.root
@@ -122,6 +122,12 @@ class HomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+            cardView1!!.visibility=View.GONE
+            cardView3!!.visibility=View.GONE
+            imageView2!!.visibility=View.GONE
+        }
 
         if(Build.VERSION.SDK_INT >+ Build.VERSION_CODES.TIRAMISU){
             requestPermissions( arrayOf(Manifest.permission.POST_NOTIFICATIONS), NOTFICATION_PERM)
@@ -418,6 +424,9 @@ class HomeFragment : Fragment() {
                                 tvDegree.visibility=View.GONE
                                 tvWeather.visibility=View.GONE
                                 cardView.visibility=View.GONE
+                                cardView1!!.visibility=View.GONE
+                                cardView3!!.visibility=View.GONE
+                                imageView2!!.visibility=View.GONE
                                 progress.visibility = View.VISIBLE
 
                             }
@@ -432,6 +441,9 @@ class HomeFragment : Fragment() {
                                 tvDegree.visibility = View.VISIBLE
                                 tvWeather.visibility = View.VISIBLE
                                 cardView.visibility = View.VISIBLE
+                                cardView1!!.visibility=View.VISIBLE
+                                cardView3!!.visibility=View.VISIBLE
+                                imageView2!!.visibility=View.VISIBLE
                                 binding.progress.visibility = View.GONE
                             }
                             val weatherData = weatherList.data
@@ -443,7 +455,7 @@ class HomeFragment : Fragment() {
                                 binding.tvPressure.text = "${weatherData.list[0].main.pressure} hPa"
                                 binding.tvWindSpeed.text = "${weatherData.list[0].wind.speed} $windStr"
                                 binding.tvCurrentLocation.text = weatherData.city.name
-                                binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
+                                //binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
                                 var icon = weatherData.list[0].weather[0].icon
 
                                 if (icon == "01d" || icon == "01n") {
@@ -497,9 +509,20 @@ class HomeFragment : Fragment() {
                                     }.setActionTextColor(R.color.md_red_900)
                                 snackbar.show()
                                 val weatherData = viewModel.getStoredWeatherData()!!.firstOrNull()
-                                binding.rvDay.visibility = View.VISIBLE
-                                binding.rvWeak.visibility = View.VISIBLE
-                                binding.progress.visibility = View.GONE
+                                binding.apply {
+                                    rvDay.visibility = View.VISIBLE
+                                    rvWeak.visibility = View.VISIBLE
+                                    tvCurrentLocation.visibility = View.VISIBLE
+                                    tvDate.visibility = View.VISIBLE
+                                    ivPhoto.visibility = View.VISIBLE
+                                    tvDegree.visibility = View.VISIBLE
+                                    tvWeather.visibility = View.VISIBLE
+                                    cardView.visibility = View.VISIBLE
+                                    cardView1!!.visibility=View.VISIBLE
+                                    cardView3!!.visibility=View.VISIBLE
+                                    imageView2!!.visibility=View.VISIBLE
+                                    binding.progress.visibility = View.GONE
+                                }
 
                                 weatherData?.let {
                                     binding.tvWeather.text =
@@ -513,7 +536,7 @@ class HomeFragment : Fragment() {
                                     binding.tvWindSpeed.text =
                                         "${weatherData.list[0].wind.speed} $windStr"
                                     binding.tvCurrentLocation.text = weatherData.city.name
-                                    binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
+                                   // binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
 
                                     var icon = weatherData.list[0].weather[0].icon
 

@@ -62,6 +62,8 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
     @SuppressLint("ResourceAsColor")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         recyclerView = view.findViewById(R.id.rv_city)
         cityAdapter = CityAdapter(this)
         cityLayoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
@@ -69,6 +71,7 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
             adapter = cityAdapter
             layoutManager = cityLayoutManager
         }
+
 
 
         viewFactory = CityViewModelFactory(
@@ -79,8 +82,20 @@ class FavoriteFragment : Fragment(),CityAdapter.OnClickListener {
 
         viewModel = ViewModelProvider(this, viewFactory).get(CityViewModel::class.java)
 
-        binding.ivNot.visibility=View.VISIBLE
-        binding.tv.visibility=View.VISIBLE
+
+        binding.swipper?.setOnRefreshListener {
+            lifecycleScope.launch {
+                binding.swipper!!.isRefreshing = false
+                if (viewModel.cityList.value.isNotEmpty()){
+                    binding.tv.visibility = View.GONE
+                    binding.ivNot.visibility = View.GONE
+                } else {
+                    binding.tv.visibility = View.VISIBLE
+                    binding.ivNot.visibility = View.VISIBLE
+                }
+
+            }
+        }
 
         val connectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val networkInfo = connectivityManager.activeNetworkInfo

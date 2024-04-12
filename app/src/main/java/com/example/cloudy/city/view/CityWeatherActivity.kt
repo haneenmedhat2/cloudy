@@ -2,15 +2,11 @@ package com.example.cloudy.city.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.location.Location
 import android.net.ConnectivityManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
@@ -23,16 +19,13 @@ import com.example.cloudy.utility.Util
 import com.example.cloudy.city.viewmodel.CityWeatherViewModel
 import com.example.cloudy.city.viewmodel.CityWeatherViewModelFactory
 import com.example.cloudy.databinding.ActivityCityWeatherBinding
-import com.example.cloudy.databinding.ActivitySettingsMapsBinding
 import com.example.cloudy.db.LocalDataSourceImp
 import com.example.cloudy.home.view.DayWeatherAdapter
-import com.example.cloudy.home.view.HomeFragment
 import com.example.cloudy.home.view.WeakAdapter
 import com.example.cloudy.model.WeatherItem
 import com.example.cloudy.model.WeatherRepositoryImp
 import com.example.cloudy.network.WeatherRemoteDataSourceImp
 import com.example.cloudy.settings.SettingsFragment
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -82,6 +75,7 @@ class CityWeatherActivity : AppCompatActivity() {
         binding = ActivityCityWeatherBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         lat = intent.getDoubleExtra("latitude", 0.0)
         lon = intent.getDoubleExtra("longitude", 0.0)
 
@@ -100,6 +94,10 @@ class CityWeatherActivity : AppCompatActivity() {
             tvDegree.visibility = View.GONE
             tvWeather.visibility = View.GONE
             cardView.visibility = View.GONE
+             cardView1!!.visibility=View.GONE
+                cardView3!!.visibility=View.GONE
+                imageView2!!.visibility=View.GONE
+
         }
 
 
@@ -182,12 +180,15 @@ class CityWeatherActivity : AppCompatActivity() {
                         binding.apply {
                             rvDay.visibility = View.GONE
                             rvWeak.visibility = View.GONE
-                            tvCurrentLocation.visibility = View.GONE
-                            tvDate.visibility = View.GONE
-                            ivPhoto.visibility = View.GONE
-                            tvDegree.visibility = View.GONE
-                            tvWeather.visibility = View.GONE
-                            cardView.visibility = View.GONE
+                            tvCurrentLocation.visibility=View.GONE
+                            tvDate.visibility=View.GONE
+                            ivPhoto.visibility=View.GONE
+                            tvDegree.visibility=View.GONE
+                            tvWeather.visibility=View.GONE
+                            cardView.visibility=View.GONE
+                            cardView1!!.visibility=View.GONE
+                            cardView3!!.visibility=View.GONE
+                            imageView2!!.visibility=View.GONE
                             progress.visibility = View.VISIBLE
                         }
 
@@ -203,6 +204,9 @@ class CityWeatherActivity : AppCompatActivity() {
                             tvDegree.visibility = View.VISIBLE
                             tvWeather.visibility = View.VISIBLE
                             cardView.visibility = View.VISIBLE
+                            cardView1!!.visibility=View.VISIBLE
+                            cardView3!!.visibility=View.VISIBLE
+                            imageView2!!.visibility=View.VISIBLE
                             binding.progress.visibility = View.GONE
                         }
                         val weatherData = weatherList.data
@@ -215,7 +219,7 @@ class CityWeatherActivity : AppCompatActivity() {
                                 binding.tvWindSpeed.text =
                                     "${weatherData.list[0].wind.speed} ${windStr}"
                                 binding.tvCurrentLocation.text = weatherData.city.name
-                                binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
+                               // binding.tvCloud.text = weatherData.list[0].clouds.all.toString()
                                 var icon = weatherData.list[0].weather[0].icon
 
                                 if (icon == "01d" || icon == "01n") {

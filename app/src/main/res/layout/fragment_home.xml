@@ -5,8 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/swipper"
-    android:background="@drawable/cloudb"
+    android:background="@color/kinda_blue"
     tools:context=".home.view.HomeFragment">
+
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,13 +18,27 @@
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:id="@+id/cl">
+
+
             <ProgressBar
+                android:id="@+id/progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/progress"
                 android:layout_marginTop="80dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.218" />
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="86dp"
+                android:src="@drawable/loc"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,16 +46,14 @@
                 android:id="@+id/tv_current_location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="36dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="82dp"
                 android:text="Mansoura"
                 android:textStyle="bold"
-                android:textSize="35sp"
-                android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
                 app:layout_constraintTop_toTopOf="parent" />
-
 
             <TextView
                 android:id="@+id/tv_date"
@@ -48,17 +61,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Friday"
-                android:textColor="@color/black"
-                android:textSize="25sp"
+                android:textSize="0sp"
                 app:layout_constraintEnd_toEndOf="@+id/tv_current_location"
                 app:layout_constraintStart_toStartOf="@+id/tv_current_location"
                 app:layout_constraintTop_toBottomOf="@+id/tv_current_location" />
 
+
             <ImageView
                 android:id="@+id/ivPhoto"
-                android:layout_width="170dp"
-                android:layout_height="170dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="312dp"
+                android:layout_height="191dp"
+                android:layout_marginTop="24dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/sunny"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -66,140 +79,82 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_date" />
 
             <TextView
-                android:id="@+id/tv_weather"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:padding="8dp"
-                android:text="Sunny"
-                android:textColor="#191717"
-                android:textSize="25dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_degree" />
-
-            <TextView
                 android:id="@+id/tv_degree"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:text="20.99 K"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:textSize="35sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ivPhoto" />
 
+            <TextView
+                android:id="@+id/tv_weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Sunny"
+                android:textColor="@color/white"
+                android:textSize="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_degree" />
+
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="80dp"
                 android:background="@color/black"
-                android:backgroundTint="@color/md_blue_100"
+                android:backgroundTint="@color/md_blue_300"
+                android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:elevation="10dp"
-                app:cardCornerRadius="15dp"
+                app:cardCornerRadius="25dp"
                 app:layout_constraintTop_toBottomOf="@+id/tv_weather"
                 tools:layout_editor_absoluteX="0dp">
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginStart="30dp"
-                    android:src="@drawable/humidity" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="70dp"
-                    android:layout_marginTop="25dp"
-                    android:text="@string/humidity"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/abhaya_libre"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/humiditywhite" />
 
                 <TextView
                     android:id="@+id/tv_humidity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="80dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginStart="65dp"
+                    android:layout_marginTop="25dp"
                     android:layout_marginEnd="30dp"
                     android:text="22%"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:fontFamily="@font/abhaya_libre"
                     android:textSize="25sp"
                     android:textStyle="bold" />
 
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="160dp"
-                    android:layout_marginStart="210dp"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginBottom="18dp"
-                    android:background="#36837C7C" />
+
 
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_marginTop="115dp"
-                    android:layout_marginStart="30dp"
-                    android:src="@drawable/pressure" />
+                    android:layout_marginTop="22dp"
+                    android:layout_marginStart="135dp"
+                    android:src="@drawable/pressurewhite" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="75dp"
-                    android:layout_marginTop="120dp"
-                    android:text="@string/pressure"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/abhaya_libre"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-               <TextView
                     android:id="@+id/tv_pressure"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                   android:layout_marginStart="65dp"
-                   android:layout_marginTop="155dp"
-                    android:text="22%"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/abhaya_libre"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginStart="235dp"
-                    android:src="@drawable/clouds" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="280dp"
+                    android:layout_marginStart="175dp"
                     android:layout_marginTop="25dp"
-                    android:text="@string/cloud"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/abhaya_libre"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-
-                <TextView
-                    android:id="@+id/tv_cloud"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="285dp"
-                    android:layout_marginTop="60dp"
                     android:text="22%"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:fontFamily="@font/abhaya_libre"
                     android:textSize="25sp"
                     android:textStyle="bold" />
@@ -208,55 +163,118 @@
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:layout_marginTop="120dp"
-                    android:layout_marginStart="235dp"
-                    android:src="@drawable/windsock" />
+                    android:layout_marginTop="22dp"
+                    android:layout_marginStart="285dp"
+                    android:src="@drawable/windwhite" />
 
                 <TextView
+                    android:id="@+id/tv_wind_speed"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="280dp"
-                    android:layout_marginTop="120dp"
-                    android:text="@string/wind"
-                    android:textColor="@color/black"
+                    android:layout_marginStart="325dp"
+                    android:layout_marginTop="25dp"
+                    android:text="22%"
+                    android:textColor="@color/white"
                     android:fontFamily="@font/abhaya_libre"
-                    android:textSize="20sp"
+                    android:textSize="25sp"
                     android:textStyle="bold" />
-
-                       <TextView
-                           android:id="@+id/tv_wind_speed"
-                           android:layout_width="wrap_content"
-                           android:layout_height="wrap_content"
-                           android:layout_marginStart="280dp"
-                           android:layout_marginTop="155dp"
-                           android:text="22%"
-                           android:textColor="@color/black"
-                           android:fontFamily="@font/abhaya_libre"
-                           android:textSize="25sp"
-                           android:textStyle="bold" />
 
             </androidx.cardview.widget.CardView>
 
-            <androidx.recyclerview.widget.RecyclerView
+
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:backgroundTint="@color/md_blue_300"
+                android:layout_marginTop="25dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:elevation="10dp"
+                app:cardCornerRadius="25dp"
+                app:layout_constraintTop_toBottomOf="@+id/cardView"
+                tools:layout_editor_absoluteX="0dp">
+
+                <TextView
+                    android:id="@+id/tv_today"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/today"
+                    android:textColor="@color/white"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
+
+       <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_day"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cardView" />
+                tools:listitem="@layout/day_wather_card"
+                tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                tools:orientation="horizontal"
+                tools:spanCount="1" />
+            </androidx.cardview.widget.CardView>
 
+
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:backgroundTint="@color/md_blue_300"
+                android:layout_marginTop="25dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:elevation="10dp"
+                app:cardCornerRadius="25dp"
+                app:layout_constraintTop_toBottomOf="@+id/cardView1"
+                tools:layout_editor_absoluteX="0dp">
+
+            <TextView
+                android:id="@+id/tv_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/_5_days_forecast"
+                android:textColor="@color/white"
+                android:textSize="22dp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.048"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView1" />
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_weak"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
+                android:layout_marginTop="45dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_day" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                tools:listitem="@layout/weak_card"
+                app:layout_constraintTop_toBottomOf="@+id/tv_week" />
 
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

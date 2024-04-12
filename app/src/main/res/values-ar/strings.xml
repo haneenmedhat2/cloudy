@@ -76,6 +76,21 @@
     <string name="alert">صفحة المنبه</string>
     <string name="settings">صفحة الأعدادات</string>
     <string name="favorite">صفحة المفضلة</string>
+    <string name="locationsettings">الموقع</string>
+    <string name="language">اللغة</string>
+    <string name="eng">الإنجليزية</string>
+    <string name="ar">عربى</string>
+    <string name="wind_speed">سرعة الرياح</string>
+    <string name="m_s">م/ث</string>
+    <string name="m_hr">م/س</string>
+    <string name="temperature">درجة الحرارة</string>
+    <string name="celsius">مئوية</string>
+    <string name="kelvin">كلفن</string>
+    <string name="fahrenheit">فهرنهايت</string>
+    <string name="gps">GPS</string>
+    <string name="map">الخريطة</string>
+    <string name="today">اليوم</string>
+    <string name="_5_days_forecast">توقعات لمدة 5 أيام</string>
 
 
 
