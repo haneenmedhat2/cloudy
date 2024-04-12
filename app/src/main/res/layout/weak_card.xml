@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="80dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="10dp"
     android:elevation="20dp"
-    android:backgroundTint="@color/md_blue_100"
+    android:backgroundTint="@color/md_blue_300"
     app:cardCornerRadius="15dp">
 
 
@@ -23,7 +23,7 @@
             android:layout_marginStart="24dp"
             android:padding="8dp"
             android:text="Tomorrow"
-            android:textColor="#191717"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginTop="25dp"/>
@@ -45,10 +45,10 @@
             android:layout_marginEnd="45dp"
             android:fontFamily="@font/abhaya_libre"
             android:text="55.55 `C"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
 
 
     </RelativeLayout>
-</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

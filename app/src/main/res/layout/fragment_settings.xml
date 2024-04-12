@@ -28,7 +28,7 @@
       <TextView
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Location"
+          android:text="@string/locationsettings"
           android:textSize="20dp"
           android:textColor="@color/black"
           android:layout_marginTop="23dp"
@@ -51,14 +51,14 @@
             android:id="@+id/button_gps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GPS"
+            android:text="@string/gps"
             style="@style/RadioButton" />
 
         <RadioButton
             android:id="@+id/button_map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Map"
+            android:text="@string/map"
             style="@style/RadioButton" />
     </info.hoang8f.android.segmented.SegmentedGroup>
 
@@ -81,7 +81,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Language"
+            android:text="@string/language"
             android:textSize="20dp"
             android:textColor="@color/black"
             android:layout_marginTop="23dp"
@@ -103,14 +103,14 @@
                 android:id="@+id/button_eng"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ENG"
+                android:text="@string/eng"
                 style="@style/RadioButton" />
 
             <RadioButton
                 android:id="@+id/button_ar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="AR"
+                android:text="@string/ar"
                 style="@style/RadioButton" />
         </info.hoang8f.android.segmented.SegmentedGroup>
 
@@ -136,7 +136,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wind Speed"
+            android:text="@string/wind_speed"
             android:textSize="20dp"
             android:textColor="@color/black"
             android:layout_marginTop="23dp"
@@ -160,7 +160,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
-                android:text="m/s"
+                android:text="@string/m_s"
                 style="@style/RadioButton" />
 
             <RadioButton
@@ -168,7 +168,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
-                android:text="m/hr"
+                android:text="@string/m_hr"
                 style="@style/RadioButton" />
         </info.hoang8f.android.segmented.SegmentedGroup>
 
@@ -193,7 +193,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Temperature"
+            android:text="@string/temperature"
             android:textSize="18dp"
             android:textColor="@color/black"
             android:layout_marginTop="23dp"
@@ -217,7 +217,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
-                android:text="Celsius"
+                android:text="@string/celsius"
                 style="@style/RadioButton" />
 
             <RadioButton
@@ -225,14 +225,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
-                android:text="Kelvin"
+                android:text="@string/kelvin"
                 style="@style/RadioButton" />
             <RadioButton
                 android:id="@+id/button_fahrenheit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
-                android:text="Fahrenheit"
+                android:text="@string/fahrenheit"
                 style="@style/RadioButton" />
         </info.hoang8f.android.segmented.SegmentedGroup>
 
