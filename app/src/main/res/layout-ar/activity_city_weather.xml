@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/swipper"
-    android:background="#29B2DD"
+    android:background="@color/kinda_blue"
     tools:context=".city.view.CityWeatherActivity">
 
 

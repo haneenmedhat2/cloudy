@@ -4,48 +4,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/kinda_blue"
     android:id="@+id/cl"
+    android:layoutDirection="ltr"
     tools:context=".settings.SettingsFragment">
-
 
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="70dp"
         android:elevation="20dp"
-        app:cardCornerRadius="15dp"
-        android:layoutDirection="ltr"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="50dp">
+        android:backgroundTint="@color/md_blue_300"
+        app:cardCornerRadius="25dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="95dp">
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="12dp"
-            android:src="@drawable/location"/>
+        <!--      <ImageView
+                  android:layout_width="30dp"
+                  android:layout_height="30dp"
+                  android:layout_marginTop="20dp"
+                  android:layout_marginStart="12dp"
+                  android:src="@drawable/locationblack"/>-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/locationsettings"
             android:textSize="20dp"
-            android:textColor="@color/black"
-            android:layout_marginTop="23dp"
-            android:layout_marginStart="60dp" />
+            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp" />
 
         <info.hoang8f.android.segmented.SegmentedGroup
+            xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
             android:id="@+id/segmented1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:layout_marginStart="240dp"
-            app:sc_tint_color="@color/md_cyan_900"
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="220dp"
+            segmentedgroup:sc_tint_color="#C7E3FB"
             android:orientation="horizontal"
+            segmentedgroup:sc_border_width="2dp"
+            segmentedgroup:sc_corner_radius="10dp">
 
-            app:sc_border_width="2dp"
-            app:sc_corner_radius="10dp">
+            <RadioButton
+                android:id="@+id/button_gps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gps"
+                style="@style/RadioButton" />
 
             <RadioButton
                 android:id="@+id/button_map"
@@ -53,51 +60,42 @@
                 android:layout_height="wrap_content"
                 android:text="@string/map"
                 style="@style/RadioButton" />
-
-            <RadioButton
-                android:id="@+id/button_gps"
-                style="@style/RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/gps" />
-
-
         </info.hoang8f.android.segmented.SegmentedGroup>
 
     </androidx.cardview.widget.CardView>
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="70dp"
         android:elevation="20dp"
-        app:cardCornerRadius="15dp"
-        android:layoutDirection="ltr"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="150dp">
+        android:backgroundTint="@color/md_blue_300"
+        app:cardCornerRadius="25dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="195dp">
 
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/language"/>
+        <!--   <ImageView
+               android:layout_width="40dp"
+               android:layout_height="40dp"
+               android:layout_marginTop="16dp"
+               android:layout_marginStart="10dp"
+               android:src="@drawable/language"/>-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/language"
             android:textSize="20dp"
-            android:textColor="@color/black"
-            android:layout_marginTop="23dp"
-            android:layout_marginStart="60dp" />
+            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp" />
 
         <info.hoang8f.android.segmented.SegmentedGroup
             xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
             android:id="@+id/segmented2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:layout_marginStart="240dp"
-            segmentedgroup:sc_tint_color="@color/md_cyan_900"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="220dp"
+            segmentedgroup:sc_tint_color="#C7E3FB"
             android:orientation="horizontal"
             segmentedgroup:sc_border_width="2dp"
             segmentedgroup:sc_corner_radius="10dp">
@@ -123,37 +121,37 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="70dp"
         android:elevation="20dp"
-        android:layoutDirection="ltr"
-        app:cardCornerRadius="15dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="250dp">
+        app:cardCornerRadius="25dp"
+        android:backgroundTint="@color/md_blue_300"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="295dp">
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="12dp"
-            android:src="@drawable/windicon"/>
+        <!--  <ImageView
+              android:layout_width="30dp"
+              android:layout_height="30dp"
+              android:layout_marginTop="20dp"
+              android:layout_marginStart="12dp"
+              android:src="@drawable/windicon"/>-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/wind_speed"
             android:textSize="20dp"
-            android:textColor="@color/black"
-            android:layout_marginTop="23dp"
-            android:layout_marginStart="60dp" />
+            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp" />
 
         <info.hoang8f.android.segmented.SegmentedGroup
             xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
             android:id="@+id/segmented3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:layout_marginStart="240dp"
-            segmentedgroup:sc_tint_color="@color/md_cyan_900"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="220dp"
+            segmentedgroup:sc_tint_color="#C7E3FB"
             android:orientation="horizontal"
 
             segmentedgroup:sc_border_width="2dp"
@@ -181,39 +179,38 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="70dp"
         android:elevation="20dp"
-        app:cardCornerRadius="15dp"
-        android:layout_marginStart="5dp"
-        android:layoutDirection="ltr"
-        android:layout_marginEnd="5dp"
-        android:layout_marginTop="350dp">
+        app:cardCornerRadius="25dp"
+        android:backgroundTint="@color/md_blue_300"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="395dp">
 
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="12dp"
-            android:src="@drawable/fahrenheit"/>
+        <!--    <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/fahrenheit"/>-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/temperature"
             android:textSize="18dp"
-            android:textColor="@color/black"
-            android:layout_marginTop="23dp"
-            android:layout_marginStart="60dp" />
+            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp" />
 
         <info.hoang8f.android.segmented.SegmentedGroup
             xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
             android:id="@+id/segmented4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:layout_marginStart="170dp"
-            segmentedgroup:sc_tint_color="@color/md_cyan_900"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="145dp"
+            segmentedgroup:sc_tint_color="#C7E3FB"
             android:orientation="horizontal"
-
             segmentedgroup:sc_border_width="2dp"
             segmentedgroup:sc_corner_radius="10dp">
 

@@ -53,8 +53,8 @@ class AddDialogFragment : DialogFragment() {
             dismiss()
         }
 
-        binding.calendarImageView.setOnClickListener { showDatePicker() }
-        binding.clockImageView.setOnClickListener { showTimePicker() }
+        binding.cardView3.setOnClickListener { showDatePicker() }
+        binding.cardView2.setOnClickListener { showTimePicker() }
 
         binding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val radioButton = binding.root.findViewById<RadioButton>(checkedId)

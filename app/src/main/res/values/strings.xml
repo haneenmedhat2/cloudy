@@ -29,13 +29,13 @@
 
 
     <string name="title_onboarding_1">Check current weather</string>
-    <string name="description_onboarding_1"> Provide up-to-date information including current temperature, humidity, wind speed and pressure.</string>
+    <string name="description_onboarding_1"> Provide up-to-date information for current weather.</string>
 
     <string name="title_onboarding_2">Weather Alert</string>
-    <string name="description_onboarding_2"> Setting alerts related to specific weather with customizable duration, alarm type and options to stop notifications."</string>
+    <string name="description_onboarding_2"> Setting alerts related to specific weather with customizable duration."</string>
 
     <string name="title_onboarding_3">Map Feature</string>
-    <string name="description_onboarding_3">Set markers on specific city on a map,add this location to your favorite and view its the weather information. </string>
+    <string name="description_onboarding_3">Search for specific city on a map,add it to your favorite and view its the weather. </string>
 
     <string name="start_text_advice">By continuing on this application you agree to our Terms of Use and Privacy Policy</string>
 
@@ -89,4 +89,6 @@
     <string name="map">Map</string>
     <string name="today">Today</string>
     <string name="_5_days_forecast">5-Days Forecast</string>
+    <string name="select_date">Select date</string>
+    <string name="select_time">Select time</string>
 </resources>

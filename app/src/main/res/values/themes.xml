@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Cloudy" parent="Theme.AppCompat.Light.DarkActionBar">
-       <item name="colorPrimary">#61A4AA</item>
+       <item name="colorPrimary">#2D86A1</item>
     </style>
 
     <style name="Base.Theme.Cloudy.ActionBar.Transparent" parent="Base.Theme.Cloudy">
@@ -16,6 +16,11 @@
 
     </style>
 
+
+    <style name="fab_square" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">15dp</item>
+    </style>
 
     <style name="Theme.Cloudy.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.Cloudy.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

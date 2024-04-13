@@ -14,56 +14,59 @@
         android:gravity="center"
         android:text="@string/set_alarm"
         android:textColor="@color/black"
-        android:textSize="35sp"
+        android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.cardview.widget.CardView
+    <Button
         android:id="@+id/cardView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="105dp"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="80dp"
         android:backgroundTint="@color/white"
+        android:background="@drawable/white_btn"
+        android:text="Select date"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/cardView2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cardView2">
 
-        <ImageView
-            android:id="@+id/calendarImageView"
-            android:layout_width="80dp"
-            android:layout_height="70dp"
-            android:layout_gravity="end"
-            android:src="@drawable/icondate"
-            tools:layout_editor_absoluteX="93dp"
-            tools:layout_editor_absoluteY="97dp" />
-    </androidx.cardview.widget.CardView>
+        <!--    <ImageView
+                android:id="@+id/calendarImageView"
+                android:layout_width="80dp"
+                android:layout_height="70dp"
+                android:layout_gravity="end"
+                android:src="@drawable/icondate"
+                tools:layout_editor_absoluteX="93dp"
+                tools:layout_editor_absoluteY="97dp" />-->
+    </Button>
 
 
-
-    <androidx.cardview.widget.CardView
+    <Button
         android:id="@+id/cardView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="72dp"
+        android:background="@drawable/white_btn"
         android:backgroundTint="@color/white"
+        android:text="Select time"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/cardView3"
         app:layout_constraintTop_toBottomOf="@+id/textView">
 
-        <ImageView
-            android:id="@+id/clockImageView"
-            android:layout_width="80dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:src="@drawable/clockicon" />
+        <!-- <ImageView
+                android:id="@+id/clockImageView"
+                android:layout_width="80dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:src="@drawable/clockicon" />-->
 
-    </androidx.cardview.widget.CardView>
-
+    </Button>
 
     <RadioGroup
         android:id="@+id/radioGroup"
@@ -121,6 +124,6 @@
         app:layout_constraintHorizontal_bias="0.838"
         app:layout_constraintStart_toEndOf="@+id/btnSave"
         app:layout_constraintTop_toBottomOf="@+id/radioGroup"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.571" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

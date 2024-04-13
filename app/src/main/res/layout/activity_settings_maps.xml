@@ -29,18 +29,19 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_database"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="end|bottom"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_btn"
-        android:src="@drawable/plus"
-        android:textColor="@color/black" />
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:backgroundTint="#61A4AA"
+            android:src="@drawable/plus"
+            android:textColor="@color/black"
+            app:shapeAppearanceOverlay="@style/fab_square"
+            android:background="@drawable/rounded_btn"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="35dp" />
 
 
 
-    </RelativeLayout>
+</RelativeLayout>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/kinda_blue"
     android:id="@+id/swipper"
     tools:context=".alert.view.AlertFragment">
 
@@ -14,14 +14,15 @@
         android:id="@+id/cl"
         >
 
+
         <TextView
             android:id="@+id/tv_alert"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="356dp"
+            android:layout_marginBottom="404dp"
             android:gravity="center"
             android:text="@string/no_alerts_yet"
-            android:textColor="@color/md_grey_600"
+            android:textColor="@color/white"
             android:textSize="30dp"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:layout_editor_absoluteX="0dp" />
@@ -30,13 +31,12 @@
             android:id="@+id/iv_not"
             android:layout_width="140dp"
             android:layout_height="140dp"
-            android:layout_marginBottom="26dp"
+            android:layout_marginBottom="8dp"
             android:src="@drawable/not"
             app:layout_constraintBottom_toTopOf="@+id/tv_alert"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent" />
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_alert"
@@ -47,7 +47,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.262" />
+            app:layout_constraintVertical_bias="0.247" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnSecFloat"
@@ -55,11 +55,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="44dp"
             android:layout_marginBottom="44dp"
-            android:backgroundTint="@color/md_cyan_800"
-            android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/alert"
+            android:backgroundTint="@color/white"
+            app:shapeAppearanceOverlay="@style/fab_square"
+            android:src="@drawable/pluss"
+            android:text="Action"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:rippleColor="@color/white" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

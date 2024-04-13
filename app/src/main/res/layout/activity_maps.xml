@@ -6,6 +6,7 @@
     android:layout_height="match_parent">
 
     <!--fragment to display our maps-->
+
     <fragment xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -29,14 +30,15 @@
         android:id="@+id/add_database"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:backgroundTint="#61A4AA"
+        android:src="@drawable/plus"
+        android:textColor="@color/black"
+        app:shapeAppearanceOverlay="@style/fab_square"
         android:background="@drawable/rounded_btn"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="20dp"
-        android:textColor="@color/black"
         android:layout_gravity="end|bottom"
-        android:src="@drawable/plus"
-        android:layout_margin="16dp" />
+        android:layout_margin="35dp" />
 
 
 </RelativeLayout>
